@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/border"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:padding="12dp">
+
+        <!-- Dummy Book Icon -->
+
+        <ImageView
+            android:id="@+id/ivBook"
+            android:layout_width="72dp"
+            android:layout_height="100dp"
+            android:background="#E8EEFF"
+            android:contentDescription="Book"
+            android:padding="18dp"
+            android:src="@drawable/iv_books"
+            app:tint="@color/primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Book Title -->
+
+        <TextView
+            android:id="@+id/tvBookTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="12dp"
+            android:text="Clean Code"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tvStatus"
+            app:layout_constraintStart_toEndOf="@id/ivBook"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Status -->
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:minWidth="88dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="Returned"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/success"
+            android:background="#E8F7F1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Member Name -->
+
+        <TextView
+            android:id="@+id/tvMemberName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:text="Ali Raza"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivBook"
+            app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
+
+        <!-- Issue Date -->
+
+        <TextView
+            android:id="@+id/tvIssueDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Issued: 15 Aug 2025"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivBook"
+            app:layout_constraintTop_toBottomOf="@id/tvMemberName" />
+
+        <!-- Return Date -->
+
+        <TextView
+            android:id="@+id/tvReturnDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="Return: 22 Aug 2025"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivBook"
+            app:layout_constraintTop_toBottomOf="@id/tvIssueDate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

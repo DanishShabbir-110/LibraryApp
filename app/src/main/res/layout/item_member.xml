@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/border"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="12dp">
+
+        <!-- Dummy Member Icon -->
+
+        <ImageView
+            android:id="@+id/ivMemberIcon"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:background="#EAF9F4"
+            android:contentDescription="Member"
+            android:padding="14dp"
+            android:src="@drawable/iv_member"
+            app:tint="@color/success"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Member Name -->
+
+        <TextView
+            android:id="@+id/tvMemberName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="12dp"
+            android:text="John Smith"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintStart_toEndOf="@id/ivMemberIcon"
+            app:layout_constraintTop_toTopOf="@id/ivMemberIcon" />
+
+        <!-- Member Email -->
+
+        <TextView
+            android:id="@+id/tvMemberEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="john@email.com"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/tvMemberName"
+            app:layout_constraintStart_toStartOf="@id/tvMemberName"
+            app:layout_constraintTop_toBottomOf="@id/tvMemberName" />
+
+        <!-- Borrowed Books Count -->
+
+        <TextView
+            android:id="@+id/tvBorrowedBooks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Borrowed Books: 2"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/tvMemberName"
+            app:layout_constraintStart_toStartOf="@id/tvMemberName"
+            app:layout_constraintTop_toBottomOf="@id/tvMemberEmail" />
+
+        <!-- Arrow -->
+
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="Member Details"
+            android:src="@drawable/iv_forward"
+            app:tint="@color/text_secondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
