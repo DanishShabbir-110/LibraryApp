@@ -11,7 +11,6 @@ data class BorrowBookEntity(
     val bookId:Int,
     val memberId:Int,
     val issueDate:Long,
-    val expectedReturnDate:Long,
-    val actualReturnDate:Long,
+    val returnDate:Long?=null,
     val status:String
 ): Serializable

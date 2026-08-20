@@ -18,13 +18,30 @@ interface BooksDao {
     suspend fun getBookById(id: Int): BookEntity?
 
     @Insert
-    suspend fun addBook(book: Book)
+    suspend fun addBook(book: BookEntity)
 
     @Update
-    suspend fun updateBook(book: Book)
+    suspend fun updateBook(book: BookEntity)
 
     @Delete
-    suspend fun deleteBook(book: Book)
+    suspend fun deleteBook(book: BookEntity)
 
+    @Query("""
+    UPDATE Book
+    SET availableCopies = availableCopies - 1
+    WHERE id = :bookId
+    AND availableCopies > 0
+""")
+    suspend fun decreaseAvailableCopies(
+        bookId: Int
+    )
 
+    @Query("""
+    UPDATE Book
+    SET availableCopies = availableCopies + 1
+    WHERE id = :bookId
+""")
+    suspend fun increaseAvailableCopies(
+        bookId: Int
+    )
 }

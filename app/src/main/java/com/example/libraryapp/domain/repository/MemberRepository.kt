@@ -9,7 +9,7 @@ interface MemberRepository {
 
     suspend fun getMemberById(id:Int): Member?
 
-    suspend fun addMember(book: Member)
-    suspend fun updateMember(book: Member)
-    suspend fun deleteMember(book: Member)
+    suspend fun addMember(member: Member)
+    suspend fun updateMember(member: Member)
+    suspend fun deleteMember(member: Member)
 }

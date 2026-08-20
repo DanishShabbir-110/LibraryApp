@@ -1,4 +1,38 @@
 package com.example.libraryapp.data.repository
 
-class MemberRepositoryImpl {
+import com.example.libraryapp.data.local.daos.MembersDao
+import com.example.libraryapp.data.mapper.toDomain
+import com.example.libraryapp.data.mapper.toEntity
+import com.example.libraryapp.domain.model.Member
+import com.example.libraryapp.domain.repository.MemberRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+
+class MemberRepositoryImpl @Inject constructor(
+    private val membersDao: MembersDao
+): MemberRepository {
+    override fun getAllMembers(): Flow<List<Member>> {
+        return membersDao.getAllMembers().map {memberEntities ->
+            memberEntities.map {entity ->
+                entity.toDomain()
+            }
+        }
+    }
+
+    override suspend fun getMemberById(id: Int): Member? {
+        return membersDao.getMemberById(id)?.toDomain()
+    }
+
+    override suspend fun addMember(member: Member) {
+        membersDao.addMember(member.toEntity())
+    }
+
+    override suspend fun updateMember(member: Member) {
+        membersDao.updateMember(member.toEntity())
+    }
+
+    override suspend fun deleteMember(member: Member) {
+        membersDao.deleteMember(member.toEntity())
+    }
 }

@@ -2,12 +2,14 @@ package com.example.libraryapp.data.repository
 
 import com.example.libraryapp.data.local.daos.BooksDao
 import com.example.libraryapp.data.mapper.toDomain
+import com.example.libraryapp.data.mapper.toEntity
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.repository.BookRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class BookRepositoryImpl(
+class BookRepositoryImpl @Inject constructor(
     private val bookDao: BooksDao
 ) : BookRepository {
     override fun getAllBooks(): Flow<List<Book>> {
@@ -23,14 +25,14 @@ class BookRepositoryImpl(
     }
 
     override suspend fun addBook(book: Book) {
-        bookDao.addBook(book)
+        bookDao.addBook(book.toEntity())
     }
 
     override suspend fun updateBook(book: Book) {
-        bookDao.updateBook(book)
+        bookDao.updateBook(book.toEntity())
     }
 
     override suspend fun deleteBook(book: Book) {
-        bookDao.deleteBook(book)
+        bookDao.deleteBook(book.toEntity())
     }
 }

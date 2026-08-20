@@ -19,4 +19,9 @@ interface BorrowBookRepository {
         borrowingId: Int,
         returnDate: Long
     )
+
+    suspend fun getActiveBorrowBook(
+        bookId: Int,
+        memberId: Int
+    ): BorrowBook?
 }

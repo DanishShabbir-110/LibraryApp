@@ -10,8 +10,7 @@ fun BorrowBookEntity.toDomain(): BorrowBook {
         bookId = bookId,
         memberId = memberId,
         issueDate = issueDate,
-        expectedReturnDate = expectedReturnDate,
-        actualReturnDate = actualReturnDate,
+        returnDate = returnDate,
         status = when (status) {
             "RETURNED" -> BorrowingStatus.RETURNED
             else -> BorrowingStatus.ISSUED
@@ -25,8 +24,7 @@ fun BorrowBook.toEntity(): BorrowBookEntity {
         bookId = bookId,
         memberId = memberId,
         issueDate = issueDate,
-        expectedReturnDate = expectedReturnDate,
-        actualReturnDate = actualReturnDate,
+        returnDate = returnDate,
         status = status.name
     )
 }
