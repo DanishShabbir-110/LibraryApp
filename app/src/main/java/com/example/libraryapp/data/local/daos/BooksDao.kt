@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BooksDao {
+
     @Query("SELECT * FROM Book")
     fun getAllBooks(): Flow<List<BookEntity>>
 
