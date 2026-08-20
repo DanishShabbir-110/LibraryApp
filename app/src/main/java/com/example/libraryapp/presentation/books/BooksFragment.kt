@@ -27,12 +27,20 @@ class BooksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupClickListeners()
+    }
+    fun setupClickListeners(){
+
         binding.fabAddBook.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, AddBookFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.ivBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
     }
 }

@@ -22,15 +22,7 @@ class IssueBookUseCase @Inject constructor(
             returnDate = null,
             status = BorrowingStatus.ISSUED
         )
-        val borrowedBook=Book(
-            id=book.id,
-            name=book.name,
-            author = book.author,
-            category = book.category,
-            totalCopies = book.totalCopies,
-            availableCopies = book.availableCopies-1
-        )
         borrowBookRepository.issueBook(issueBook)
-        bookRepository.updateBook(borrowedBook)
+        bookRepository.decreaseAvailableCopies(book.id)
     }
 }

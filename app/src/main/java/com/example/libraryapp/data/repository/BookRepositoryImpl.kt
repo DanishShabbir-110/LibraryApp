@@ -35,4 +35,12 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun deleteBook(book: Book) {
         bookDao.deleteBook(book.toEntity())
     }
+
+    override suspend fun decreaseAvailableCopies(bookId: Int) {
+        bookDao.decreaseAvailableCopies(bookId)
+    }
+
+    override suspend fun increaseAvailableCopies(bookId: Int) {
+        bookDao.increaseAvailableCopies(bookId)
+    }
 }

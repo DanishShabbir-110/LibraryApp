@@ -25,13 +25,6 @@ class ReturnBookUseCase @Inject constructor(
             activeBorrowBook.id,
             returnDate
         )
-//        val returnedBook=Book(
-//            id=book.id,
-//            name=book.name,
-//            author = book.author,
-//            category = book.category,
-//            totalCopies = book.totalCopies,
-//            availableCopies = book.availableCopies+1
-//        )
+        bookRepository.increaseAvailableCopies(bookId)
     }
 }

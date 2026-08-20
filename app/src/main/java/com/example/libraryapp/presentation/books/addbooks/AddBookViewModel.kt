@@ -28,26 +28,25 @@ class AddBookViewModel @Inject constructor(
         category: String,
         totalCopies: Int
     ) {
-        val state = _uiState.value
-        if (state.name.isBlank()) {
+        if (name.isBlank()) {
             _uiState.update {
                 it.copy(errorMessage = "Book name is required.")
             }
             return
         }
-        if (state.author.isBlank()) {
+        if (author.isBlank()) {
             _uiState.update {
                 it.copy(errorMessage = "Author name is required.")
             }
             return
         }
-        if (state.category.isBlank()) {
+        if (category.isBlank()) {
             _uiState.update {
                 it.copy(errorMessage = "Select Category")
             }
             return
         }
-        val copies = state.totalCopies.toIntOrNull()
+        val copies = totalCopies
         if (copies == null || copies <= 0) {
             _uiState.update {
                 it.copy(errorMessage = "Total copies must be greater than 0")

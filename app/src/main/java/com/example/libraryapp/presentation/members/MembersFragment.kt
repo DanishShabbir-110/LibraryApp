@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
+import com.example.libraryapp.presentation.books.addbooks.AddBookFragment
 import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 
 class MembersFragment : Fragment() {
@@ -25,6 +26,10 @@ class MembersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupClickListeners()
+    }
+
+    fun setupClickListeners(){
         binding.fabAddMember.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
@@ -32,6 +37,9 @@ class MembersFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-    }
 
+        binding.ivBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+    }
 }
