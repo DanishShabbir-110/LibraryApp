@@ -1,6 +1,65 @@
 package com.example.libraryapp.presentation.books
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BookViewModel(): ViewModel() {
+@HiltViewModel
+class BookViewModel @Inject constructor(
+    private val getBooksUseCase: GetBooksUseCase
+) : ViewModel() {
+    private var allBooks: List<Book> = emptyList()
+    private var _uiState = MutableStateFlow(BookUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        getBooks()
+    }
+
+    fun getBooks() {
+        viewModelScope.launch {
+            getBooksUseCase().collectLatest { books ->
+
+                allBooks=books
+                _uiState.update {
+                    it.copy(
+                        books = books,
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                }
+            }
+        }
+    }
+    fun searchBooks(query: String) {
+
+        val filteredBooks = if (query.isBlank()) {
+            allBooks
+        } else {
+            allBooks.filter { book ->
+                book.name.contains(query, ignoreCase = true) ||
+                        book.author.contains(query, ignoreCase = true) ||
+                        book.category.contains(query, ignoreCase = true)
+            }
+        }
+
+        _uiState.update {
+            it.copy(
+                books = filteredBooks
+            )
+        }
+    }
+    fun clearError() {
+        _uiState.update {
+            it.copy(errorMessage = null)
+        }
+    }
 }

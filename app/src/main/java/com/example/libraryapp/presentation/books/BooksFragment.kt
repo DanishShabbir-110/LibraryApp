@@ -1,35 +1,83 @@
 package com.example.libraryapp.presentation.books
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
 import com.example.libraryapp.presentation.books.addbooks.AddBookFragment
-import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class BooksFragment : Fragment() {
-    private val binding: FragmentBooksBinding by lazy {
-        FragmentBooksBinding.inflate(layoutInflater)
-    }
+    private val viewModel: BookViewModel by viewModels()
+    private var _binding: FragmentBooksBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var bookAdapter: BooksAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
+        _binding = FragmentBooksBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         setupClickListeners()
+        observeUiState()
+        setupSearch()
+
     }
-    fun setupClickListeners(){
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    bookAdapter.submitList(state.books)
+                    binding.loadingOverlay.isVisible = state.isLoading
+                    state.errorMessage?.let { message ->
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        viewModel.clearError()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        bookAdapter = BooksAdapter()
+
+        binding.rvBooks.apply {
+            adapter = bookAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
+    }
+
+    fun setupClickListeners() {
 
         binding.fabAddBook.setOnClickListener {
             parentFragmentManager
@@ -42,5 +90,21 @@ class BooksFragment : Fragment() {
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupSearch() {
+
+        binding.etSearchBooks.doAfterTextChanged { editable ->
+
+                viewModel.searchBooks(
+                    editable?.toString().orEmpty()
+                )
+            }
     }
 }

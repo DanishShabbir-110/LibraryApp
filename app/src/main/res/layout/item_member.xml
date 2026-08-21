@@ -13,6 +13,7 @@
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clMember"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:padding="12dp">
@@ -44,7 +45,7 @@
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintEnd_toEndOf="@id/clMember"
             app:layout_constraintStart_toEndOf="@id/ivMemberIcon"
             app:layout_constraintTop_toTopOf="@id/ivMemberIcon" />
 
@@ -65,30 +66,17 @@
         <!-- Borrowed Books Count -->
 
         <TextView
-            android:id="@+id/tvBorrowedBooks"
+            android:id="@+id/tvPhone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Borrowed Books: 2"
+            android:text="1234567"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/tvMemberName"
             app:layout_constraintStart_toStartOf="@id/tvMemberName"
             app:layout_constraintTop_toBottomOf="@id/tvMemberEmail" />
 
-        <!-- Arrow -->
-
-        <ImageView
-            android:id="@+id/ivArrow"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="4dp"
-            android:contentDescription="Member Details"
-            android:src="@drawable/iv_forward"
-            app:tint="@color/text_secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
