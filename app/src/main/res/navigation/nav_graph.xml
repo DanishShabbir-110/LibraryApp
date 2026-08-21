@@ -42,7 +42,7 @@
         tools:layout="@layout/fragment_add_member" />
     <fragment
         android:id="@+id/browsingHistoryFragment"
-        android:name="com.example.libraryapp.presentation.history.BrowsingHistoryFragment"
+        android:name="com.example.libraryapp.presentation.history.BorrowingHistoryFragment"
         android:label="fragment_browsing_history"
         tools:layout="@layout/fragment_browsing_history" />
 

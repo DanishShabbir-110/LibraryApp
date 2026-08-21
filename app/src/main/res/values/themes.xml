@@ -1,13 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.LibraryApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Base.Theme.LibraryApp"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/primary</item>
+
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
-    <style name="Theme.LibraryApp" parent="Base.Theme.LibraryApp" />
+    <style name="Theme.LibraryApp"
+        parent="Base.Theme.LibraryApp" />
+
     <style name="MyBottomNavTheme" parent="">
         <item name="colorSecondaryContainer">#C0DFF0</item>
         <item name="colorOnSecondaryContainer">@color/primary</item>
     </style>
+
 </resources>

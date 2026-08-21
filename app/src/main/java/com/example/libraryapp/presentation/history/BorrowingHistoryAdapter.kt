@@ -46,6 +46,8 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
                     tvStatus.setTextColor(Color.parseColor("#FF9800"))
                 } else {
                     tvStatus.text = borrowBook.status.toString()
+                    tvStatus.setBackgroundColor(Color.parseColor("#EAF9F4"))
+                    tvStatus.setTextColor(Color.parseColor("#4CAF50"))
                 }
             }
         }

@@ -9,8 +9,7 @@ import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAppmenuBinding
 import com.example.libraryapp.presentation.books.BooksFragment
 import com.example.libraryapp.presentation.dashboard.DashboardFragment
-import com.example.libraryapp.presentation.history.BrowsingHistoryFragment
-import com.example.libraryapp.presentation.issue_return.IssueReturnBookFragment
+import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
 import com.example.libraryapp.presentation.members.MembersFragment
 
 class AppMenuFragment : Fragment() {
@@ -38,7 +37,7 @@ class AppMenuFragment : Fragment() {
                 R.id.nav_home -> DashboardFragment()
                 R.id.nav_books -> BooksFragment()
                 R.id.nav_members -> MembersFragment()
-                R.id.nav_history -> BrowsingHistoryFragment()
+                R.id.nav_history -> BorrowingHistoryFragment()
                 else -> null
             }
 

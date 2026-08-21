@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values-night/colors.xml -->
+<resources>
+    <color name="primary">#AEB8FF</color>
+    <color name="background">#121318</color>
+    <color name="surface">#1B1D24</color>
+
+    <color name="text_primary">#F4F4F6</color>
+    <color name="text_secondary">#B8BBC5</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <color name="border">#343741</color>
+
+    <color name="success">#6EDC95</color>
+    <color name="error">#FF8A80</color>
+    <color name="warning">#FFC766</color>
+</resources>

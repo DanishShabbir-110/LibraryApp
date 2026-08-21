@@ -3,6 +3,7 @@ package com.example.libraryapp.presentation.history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.cases.borrowbooks.GetBorrowBooksUseCase
+import com.example.libraryapp.domain.model.BorrowingStatus
 import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
 import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,6 +87,31 @@ class BorrowingHistoryViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 filteredBooks
+            )
+        }
+    }
+    fun filterByStatus(filter: BorrowingStatus) {
+
+        val filteredList = when (filter) {
+
+            BorrowingStatus.ALL -> allBooks
+
+            BorrowingStatus.ISSUED -> {
+                allBooks.filter {
+                    it.status == BorrowingStatus.ISSUED
+                }
+            }
+
+            BorrowingStatus.RETURNED -> {
+                allBooks.filter {
+                    it.status == BorrowingStatus.RETURNED
+                }
+            }
+        }
+
+        _uiState.update {
+            it.copy(
+                borrowList = filteredList
             )
         }
     }

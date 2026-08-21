@@ -15,6 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.libraryapp.databinding.FragmentIssueReturnBookBinding
+import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
+import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -137,7 +139,15 @@ class IssueReturnBookFragment : Fragment() {
                             requireContext(), state.successMessage, Toast.LENGTH_SHORT
                         ).show()
 
-                        parentFragmentManager.popBackStack()
+                        parentFragmentManager
+                            .beginTransaction()
+                            .replace(
+                                com.example.libraryapp.R.id.fragmentContainer,
+                                BorrowingHistoryFragment()
+                            )
+                            .addToBackStack(null)
+                            .commit()
+
                     }
                 }
             }

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".presentation.history.BrowsingHistoryFragment">
-
+    tools:context=".presentation.history.BorrowingHistoryFragment">
 
     <View
         android:id="@+id/topBarBackground"
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:background="@drawable/bg_dashboard_header"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/ivBack"
@@ -26,43 +25,43 @@
         android:layout_marginStart="20dp"
         android:contentDescription="Back"
         android:src="@drawable/iv_back"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
+        app:tint="@color/text_on_primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/topBarBackground"
-        app:tint="@color/text_on_primary" />
-
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground" />
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="16dp"
         android:text="Borrowing History"
         android:textColor="@color/text_on_primary"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/ivBack"
-        app:layout_constraintEnd_toEndOf="@id/topBarBackground"
         app:layout_constraintStart_toEndOf="@id/ivBack"
-        app:layout_constraintTop_toTopOf="@id/ivBack" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topBarBackground"
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilSearch"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:hint="Search books..."
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusTopStart="12dp"
         app:startIconDrawable="@drawable/iv_search"
         app:startIconTint="@color/text_secondary"
-        app:layout_constraintEnd_toStartOf="@id/tilStatus"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tilStatus"
         app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -71,52 +70,52 @@
             android:layout_height="match_parent"
             android:inputType="text"
             android:maxLines="1"
+            android:singleLine="true"
             android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <!-- Status Dropdown -->
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilStatus"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="110dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
+        android:layout_width="130dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="16dp"
         app:boxCornerRadiusTopStart="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
+        android:hint="Status"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:layout_constraintTop_toTopOf="@id/tilSearch"
+        app:layout_constraintBottom_toBottomOf="@id/tilSearch"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/actStatus"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="All"
+            android:gravity="center_vertical"
             android:inputType="none"
+            android:paddingStart="12dp"
+            android:singleLine="true"
+            android:text="All"
             android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBorrowingHistory"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         android:clipToPadding="false"
-        android:paddingStart="12dp"
-        android:paddingTop="14dp"
-        android:paddingEnd="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilSearch"
-        tools:listitem="@layout/item_borrowing_history"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_borrowing_history" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

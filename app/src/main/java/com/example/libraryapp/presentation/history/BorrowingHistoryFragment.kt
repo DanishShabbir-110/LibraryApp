@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -13,11 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
+import com.example.libraryapp.domain.model.BorrowingStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BrowsingHistoryFragment : Fragment() {
+class BorrowingHistoryFragment : Fragment() {
     private val viewModel: BorrowingHistoryViewModel by viewModels()
 
     private lateinit var borrowingHistoryAdapter: BorrowingHistoryAdapter
@@ -41,6 +43,7 @@ class BrowsingHistoryFragment : Fragment() {
         setupRecyclerView()
         observeUiState()
         setupSearch()
+        setupStatusDropdown()
     }
 
     private fun observeUiState() {
@@ -75,12 +78,61 @@ class BrowsingHistoryFragment : Fragment() {
 
     private fun setupSearch() {
 
-        binding.etSearch
-            .doAfterTextChanged { editable ->
+        binding.etSearch.doAfterTextChanged { editable ->
+            viewModel.searchBooks(
+                editable?.toString().orEmpty()
+            )
+        }
+    }
 
-                viewModel.searchBooks(
-                    editable?.toString().orEmpty()
-                )
+    private fun setupStatusDropdown() {
+
+        val statusList = listOf(
+            "All",
+            "Issued",
+            "Returned"
+        )
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            statusList
+        )
+
+        binding.actStatus.apply {
+
+            setAdapter(adapter)
+
+            // Default text
+            setText("All", false)
+
+            // User keyboard se type na kar sake
+            keyListener = null
+
+            setOnClickListener {
+                showDropDown()
             }
+
+            setOnItemClickListener { _, _, position, _ ->
+
+                val selectedStatus = statusList[position]
+
+                setText(selectedStatus, false)
+
+                val filter = when (selectedStatus) {
+
+                    "Issued" ->
+                        BorrowingStatus.ISSUED
+
+                    "Returned" ->
+                        BorrowingStatus.RETURNED
+
+                    else ->
+                        BorrowingStatus.ALL
+                }
+
+                viewModel.filterByStatus(filter)
+            }
+        }
     }
 }
