@@ -3,6 +3,7 @@ package com.example.libraryapp.presentation.members
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Member
+import com.example.libraryapp.domain.usecases.members.DeleteMemberUseCase
 import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberViewModel @Inject constructor(
-    private val getMembersUseCase: GetMembersUseCase
+    private val getMembersUseCase: GetMembersUseCase,
+    private val deleteMemberUseCase: DeleteMemberUseCase
 ) : ViewModel() {
     private var allMembers: List<Member> = emptyList()
     private var _uiState = MutableStateFlow(MemberUiState())
@@ -46,6 +48,19 @@ class MemberViewModel @Inject constructor(
         }
     }
 
+    fun deleteMember(member:Member){
+        viewModelScope.launch {
+            try{
+                deleteMemberUseCase(member)
+            }catch (ex: Exception){
+                _uiState.update {
+                    it.copy(
+                        errorMessage = ex.message?:"Failed to delete member."
+                    )
+                }
+            }
+        }
+    }
     fun clearError() {
         _uiState.update {
             it.copy(

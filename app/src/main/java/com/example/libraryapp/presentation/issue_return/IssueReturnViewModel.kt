@@ -118,7 +118,7 @@ class IssueReturnViewModel @Inject constructor(
 
                 issueBookUseCase(
                     book,
-                    member.id,
+                    member,
                     issueDate
                 )
 

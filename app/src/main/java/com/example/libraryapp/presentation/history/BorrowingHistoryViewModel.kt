@@ -9,6 +9,7 @@ import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,9 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BorrowingHistoryViewModel @Inject constructor(
-    private val getBorrowBooksUseCase: GetBorrowBooksUseCase,
-    private val getBooksUseCase: GetBooksUseCase,
-    private val getMembersUseCase: GetMembersUseCase
+    private val getBorrowBooksUseCase: GetBorrowBooksUseCase
 ) : ViewModel() {
     private var allBooks: List<BorrowingHistoryItem> = emptyList()
     private var _uiState = MutableStateFlow(BorrowingHistoryUiState())
@@ -30,33 +29,20 @@ class BorrowingHistoryViewModel @Inject constructor(
 
     private fun getBorrowBooks() {
         viewModelScope.launch {
-            combine(
-                getBorrowBooksUseCase(),
-                getBooksUseCase(),
-                getMembersUseCase()
-            ) { borrowBooks, books, members ->
-                borrowBooks.map { borrowBook ->
-                    val book = books.find {
-                        it.id == borrowBook.bookId
-                    }
-                    val member = members.find {
-                        it.id == borrowBook.memberId
-                    }
-
-                    BorrowingHistoryItem(
-                        borrowingId = borrowBook.id,
-                        memberName = member?.name ?: "Unknown Member",
-                        bookName = book?.name ?: "Unknown Book",
-                        issueDate = borrowBook.issueDate,
-                        returnDate = borrowBook.returnDate,
-                        status = borrowBook.status
-                    )
-                }
-            }.collect { borrowingHistory ->
-                allBooks = borrowingHistory
+            getBorrowBooksUseCase().collectLatest{ borrowingHistory ->
+               allBooks=borrowingHistory.map {borrowBook ->
+                   BorrowingHistoryItem(
+                       borrowingId = borrowBook.id,
+                       memberName = borrowBook.memberName,
+                       bookName = borrowBook.bookName,
+                       issueDate = borrowBook.issueDate,
+                       returnDate = borrowBook.returnDate,
+                       status = borrowBook.status
+                   )
+               }
                 _uiState.update {
                     it.copy(
-                        borrowList = borrowingHistory,
+                        borrowList = allBooks,
                         isLoading = false,
                         errorMessage = null
                     )

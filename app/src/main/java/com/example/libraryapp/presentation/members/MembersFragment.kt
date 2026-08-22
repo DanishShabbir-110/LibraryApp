@@ -14,7 +14,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
+import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -71,7 +74,9 @@ class MembersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        memberAdapter= MemberAdapter()
+        memberAdapter= MemberAdapter {member ->
+            showDeleteDialog(member)
+        }
         binding.rvMembers.apply {
             adapter=memberAdapter
             layoutManager= LinearLayoutManager(requireContext())
@@ -100,6 +105,15 @@ class MembersFragment : Fragment() {
                     editable?.toString().orEmpty()
                 )
             }
+    }
+    private fun showDeleteDialog(member: Member) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Member")
+            .setMessage("Are you sure want to delete this member.")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteMember(member)
+            }.show()
     }
     override fun onDestroyView() {
         super.onDestroyView()

@@ -10,6 +10,8 @@ data class BorrowBookEntity(
     val id:Int=0,
     val bookId:Int,
     val memberId:Int,
+    val bookName: String,
+    val memberName: String,
     val issueDate:Long,
     val returnDate:Long?=null,
     val status:String

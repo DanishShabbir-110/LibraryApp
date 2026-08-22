@@ -3,6 +3,7 @@ package com.example.libraryapp.presentation.books
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.domain.usecases.books.DeleteBookUseCase
 import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookViewModel @Inject constructor(
-    private val getBooksUseCase: GetBooksUseCase
+    private val getBooksUseCase: GetBooksUseCase,
+    private val getDeleteBookUseCase: DeleteBookUseCase
 ) : ViewModel() {
     private var allBooks: List<Book> = emptyList()
     private var _uiState = MutableStateFlow(BookUiState())
@@ -34,6 +36,20 @@ class BookViewModel @Inject constructor(
                         books = books,
                         isLoading = false,
                         errorMessage = null
+                    )
+                }
+            }
+        }
+    }
+
+    fun deleteBook(book:Book){
+        viewModelScope.launch {
+            try{
+                getDeleteBookUseCase(book)
+            }catch (ex: Exception){
+                _uiState.update {
+                    it.copy(
+                        errorMessage = ex.message?:"Failed to delete a book"
                     )
                 }
             }

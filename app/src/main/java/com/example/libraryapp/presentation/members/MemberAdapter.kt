@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.libraryapp.databinding.ItemMemberBinding
 import com.example.libraryapp.domain.model.Member
 
-class MemberAdapter() : RecyclerView.Adapter<MemberAdapter.VH>() {
+class MemberAdapter(
+    private val onDeleteClick:(Member)-> Unit
+) : RecyclerView.Adapter<MemberAdapter.VH>() {
     private var members = mutableListOf<Member>()
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -25,7 +27,7 @@ class MemberAdapter() : RecyclerView.Adapter<MemberAdapter.VH>() {
         holder: VH,
         position: Int
     ) {
-        holder.binding(members[position])
+        holder.binding(members[position],onDeleteClick=onDeleteClick)
     }
 
     override fun getItemCount(): Int = members.size
@@ -37,10 +39,13 @@ class MemberAdapter() : RecyclerView.Adapter<MemberAdapter.VH>() {
     }
 
     class VH(val bind: ItemMemberBinding) : RecyclerView.ViewHolder(bind.root) {
-        fun binding(member: Member) {
+        fun binding(member: Member,onDeleteClick: (Member) -> Unit) {
             bind.tvMemberName.text = member.name
             bind.tvMemberEmail.text = member.email
             bind.tvPhone.text = member.phone
+            bind.ivDeleteMember.setOnClickListener {
+                onDeleteClick(member)
+            }
         }
     }
 }

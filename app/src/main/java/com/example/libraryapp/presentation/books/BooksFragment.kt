@@ -15,7 +15,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
+import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.presentation.books.addbooks.AddBookFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -68,13 +70,25 @@ class BooksFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        bookAdapter = BooksAdapter()
+        bookAdapter = BooksAdapter { book ->
+            showDeleteDialog(book)
+        }
 
         binding.rvBooks.apply {
             adapter = bookAdapter
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
         }
+    }
+
+    private fun showDeleteDialog(book: Book) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Book")
+            .setMessage("Are you sure want to delete this book.")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteBook(book)
+            }.show()
     }
 
     fun setupClickListeners() {
@@ -102,9 +116,9 @@ class BooksFragment : Fragment() {
 
         binding.etSearchBooks.doAfterTextChanged { editable ->
 
-                viewModel.searchBooks(
-                    editable?.toString().orEmpty()
-                )
-            }
+            viewModel.searchBooks(
+                editable?.toString().orEmpty()
+            )
+        }
     }
 }

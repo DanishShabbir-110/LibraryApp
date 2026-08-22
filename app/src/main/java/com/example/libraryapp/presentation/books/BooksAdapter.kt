@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.libraryapp.databinding.ItemBookBinding
 import com.example.libraryapp.domain.model.Book
 
-class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.VH>() {
+class BooksAdapter(
+    private val onDeleteClick:(Book)->Unit
+) : RecyclerView.Adapter<BooksAdapter.VH>() {
     private var books = mutableListOf<Book>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(
@@ -20,7 +22,7 @@ class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.VH>() {
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.binding(books[position])
+        holder.binding(books[position], onDeleteClick = onDeleteClick)
     }
 
     override fun getItemCount(): Int = books.size
@@ -32,12 +34,15 @@ class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.VH>() {
     }
 
     class VH(val bind: ItemBookBinding) : RecyclerView.ViewHolder(bind.root) {
-        fun binding(book: Book) {
+        fun binding(book: Book,onDeleteClick: (Book) -> Unit) {
             with(bind) {
                 tvBookTitle.text = book.name
                 tvBookAuthor.text = book.author
                 tvBookCategory.text = "Category: ${book.category}"
                 tvBookAvailability.text = "Avialable: ${book.availableCopies} / ${book.totalCopies}"
+                ivDeleteBook.setOnClickListener {
+                    onDeleteClick(book)
+                }
             }
         }
     }
