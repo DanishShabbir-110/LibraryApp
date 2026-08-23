@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.libraryapp.databinding.FragmentAddBookBinding
-import com.example.libraryapp.domain.model.Book
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -42,7 +41,42 @@ class AddBookFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupDropDown()
         setupClickListeners()
+        setupTextListeners()
+        setupUpdateScreen()
         observeUiState()
+    }
+
+    private fun setupTextListeners() {
+        binding.etBookTitle.doAfterTextChanged {
+            viewModel.updateName(
+                it?.toString().orEmpty()
+            )
+        }
+
+        binding.etAuthor.doAfterTextChanged {
+            viewModel.updateAuthor(
+                it?.toString().orEmpty()
+            )
+        }
+
+        binding.actCategory.doAfterTextChanged {
+            viewModel.updateCategory(
+                it?.toString().orEmpty()
+            )
+        }
+
+        binding.etTotalCopies.doAfterTextChanged {
+            viewModel.updateTotalCopies(
+                it?.toString().orEmpty()
+            )
+        }
+    }
+
+    private fun setupUpdateScreen() {
+        val bookId = arguments?.getInt("bookId") ?: -1
+        if (bookId != -1) {
+            viewModel.loadBook(bookId)
+        }
     }
 
     private fun setupDropDown() {
@@ -77,6 +111,14 @@ class AddBookFragment : Fragment() {
                     binding.loadingOverlay.isVisible = state.isLoading
                     binding.btnSaveBook.isEnabled = !state.isLoading
 
+                    if(state.isEditMode){
+                        binding.tvTitle.text="Update Book"
+                        binding.btnSaveBook.text="Update Book"
+                    }else{
+                        binding.btnSaveBook.text="Add Book"
+                        binding.tvTitle.text="Add Book"
+                    }
+
                     state.errorMessage?.let { message ->
                         Toast.makeText(
                             requireContext(),
@@ -87,10 +129,14 @@ class AddBookFragment : Fragment() {
 
                     }
                     if (state.isBookAdded) {
-
+                        val message=if(state.isEditMode){
+                            "Book Updated Successfully"
+                        }else{
+                            "Book added successfully"
+                        }
                         Toast.makeText(
                             requireContext(),
-                            "Book added successfully",
+                            message,
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -107,28 +153,7 @@ class AddBookFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSaveBook.setOnClickListener {
-            val name = binding.etBookTitle.text
-                .toString()
-                .trim()
-
-            val author = binding.etAuthor.text
-                .toString()
-                .trim()
-
-            val category = binding.actCategory.text
-                .toString()
-                .trim()
-
-            val totalCopies = binding.etTotalCopies.text
-                .toString()
-                .toIntOrNull() ?: 0
-
-            viewModel.addBook(
-                name = name,
-                author = author,
-                category = category,
-                totalCopies = totalCopies
-            )
+            viewModel.saveBook()
         }
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()

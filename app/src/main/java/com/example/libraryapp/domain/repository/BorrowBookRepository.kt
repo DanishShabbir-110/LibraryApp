@@ -24,4 +24,8 @@ interface BorrowBookRepository {
         bookId: Int,
         memberId: Int
     ): BorrowBook?
+
+    suspend fun updateBorrowBookName(bookName:String,bookId:Int)
+    suspend fun updateBorrowMemberName(memberName:String,memberId:Int)
+
 }

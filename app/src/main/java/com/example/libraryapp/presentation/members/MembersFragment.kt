@@ -14,7 +14,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
-import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -54,8 +53,8 @@ class MembersFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(
                 Lifecycle.State.STARTED
-            ){
-                viewModel.uiState.collect {state ->
+            ) {
+                viewModel.uiState.collect { state ->
                     memberAdapter.submitList(state.members)
 
                     state.errorMessage?.let { message ->
@@ -74,12 +73,23 @@ class MembersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        memberAdapter= MemberAdapter {member ->
-            showDeleteDialog(member)
-        }
+        memberAdapter = MemberAdapter(
+            onDeleteClick = { member ->
+                showDeleteDialog(member)
+            },
+            onUpdateClick = { member ->
+                val addMember = AddMemberFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt("memberId", member.id)
+                    }
+                }
+                parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, addMember)
+                    .addToBackStack(null).commit()
+            }
+        )
         binding.rvMembers.apply {
-            adapter=memberAdapter
-            layoutManager= LinearLayoutManager(requireContext())
+            adapter = memberAdapter
+            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
@@ -96,6 +106,7 @@ class MembersFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
     }
+
     private fun setupSearch() {
 
         binding.etSearchMembers
@@ -106,6 +117,7 @@ class MembersFragment : Fragment() {
                 )
             }
     }
+
     private fun showDeleteDialog(member: Member) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete Member")
@@ -115,6 +127,7 @@ class MembersFragment : Fragment() {
                 viewModel.deleteMember(member)
             }.show()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
 

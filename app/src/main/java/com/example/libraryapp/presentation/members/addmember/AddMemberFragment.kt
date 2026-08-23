@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,9 +41,40 @@ class AddMemberFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUpdateScreen()
+        setupTextListeners()
         setupClickListeners()
         observeUiState()
     }
+
+    private fun setupTextListeners() {
+        binding.etMemberName.doAfterTextChanged {
+            viewModel.updateName(
+                it?.toString().orEmpty()
+            )
+        }
+
+        binding.etEmail.doAfterTextChanged {
+            viewModel.updateEmail(
+                it?.toString().orEmpty()
+            )
+        }
+
+        binding.etPhone.doAfterTextChanged {
+            viewModel.updatePhone(
+                it?.toString().orEmpty()
+            )
+        }
+
+    }
+
+    private fun setupUpdateScreen() {
+        val memberId=arguments?.getInt("memberId")?:-1
+        if(memberId!=-1){
+            viewModel.loadMember(memberId)
+        }
+    }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(
@@ -64,6 +96,14 @@ class AddMemberFragment : Fragment() {
                     binding.loadingOverlay.isVisible = state.isLoading
                     binding.btnSaveMember.isEnabled = !state.isLoading
 
+                    if(state.isEditMode){
+                        binding.tvTitle.text="Update Member"
+                        binding.btnSaveMember.text="Update Member"
+                    }else{
+                        binding.tvTitle.text="Save Member"
+                        binding.btnSaveMember.text="Save Member"
+                    }
+
                     state.errorMessage?.let { message ->
                         Toast.makeText(
                             requireContext(),
@@ -74,10 +114,15 @@ class AddMemberFragment : Fragment() {
 
                     }
                     if (state.isMemberAdded) {
+                        val message=if(state.isEditMode){
+                            "Member Updated Successfully"
+                        }else{
+                            "Member added successfully"
+                        }
 
                         Toast.makeText(
                             requireContext(),
-                            "Member added successfully",
+                            message,
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -94,23 +139,7 @@ class AddMemberFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSaveMember.setOnClickListener {
-            val name = binding.etMemberName.text
-                .toString()
-                .trim()
-
-            val email = binding.etEmail.text
-                .toString()
-                .trim()
-
-            val phone = binding.etMemberName.text
-                .toString()
-                .trim()
-
-            viewModel.addMember(
-                name = name,
-                email = email,
-                phone=phone
-            )
+            viewModel.saveMember()
         }
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()

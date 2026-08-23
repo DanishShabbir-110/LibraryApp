@@ -49,4 +49,13 @@ interface BorrowBookDao {
         memberId: Int,
         status: BorrowingStatus = BorrowingStatus.ISSUED
     ): BorrowBookEntity?
+
+
+    @Query("Update BorrowBooks set bookName=:bookName where bookId=:bookId")
+    suspend fun updateBorrowBookName(bookName:String,bookId:Int)
+
+    @Query("Update BorrowBooks set memberName=:memberName where memberId=:memberId")
+    suspend fun updateBorrowMemberName(memberName:String,memberId:Int)
+
+
 }

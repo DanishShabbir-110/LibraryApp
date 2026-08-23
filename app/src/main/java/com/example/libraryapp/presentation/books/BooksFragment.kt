@@ -70,9 +70,20 @@ class BooksFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        bookAdapter = BooksAdapter { book ->
-            showDeleteDialog(book)
-        }
+        bookAdapter = BooksAdapter(
+            onDeleteClick = { book ->
+                showDeleteDialog(book)
+            },
+            onUpdateClick = { book ->
+                val bundle = Bundle().apply {
+                    putInt("bookId", book.id)
+                }
+                val addBookFragment = AddBookFragment()
+                addBookFragment.arguments = bundle
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, addBookFragment).addToBackStack(null).commit()
+            }
+        )
 
         binding.rvBooks.apply {
             adapter = bookAdapter

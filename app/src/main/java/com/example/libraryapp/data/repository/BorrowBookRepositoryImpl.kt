@@ -48,4 +48,12 @@ class BorrowBookRepositoryImpl @Inject constructor(
         return borrowBookDao.getActiveBorrowBook(bookId,memberId)?.toDomain()
     }
 
+    override suspend fun updateBorrowBookName(bookName: String, bookId: Int) {
+        borrowBookDao.updateBorrowBookName(bookName,bookId)
+    }
+
+    override suspend fun updateBorrowMemberName(memberName: String, memberId: Int) {
+        borrowBookDao.updateBorrowMemberName(memberName,memberId)
+    }
+
 }
