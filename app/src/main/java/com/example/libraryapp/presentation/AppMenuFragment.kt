@@ -1,10 +1,10 @@
 package com.example.libraryapp.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAppmenuBinding
 import com.example.libraryapp.presentation.books.BooksFragment
@@ -13,15 +13,14 @@ import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
 import com.example.libraryapp.presentation.members.MembersFragment
 
 class AppMenuFragment : Fragment() {
-    private val binding: FragmentAppmenuBinding by lazy {
-        FragmentAppmenuBinding.inflate(layoutInflater)
-    }
+    private var _binding: FragmentAppmenuBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
+        _binding = FragmentAppmenuBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -34,10 +33,22 @@ class AppMenuFragment : Fragment() {
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             val selectedFragment: Fragment? = when (item.itemId) {
-                R.id.nav_home -> DashboardFragment()
-                R.id.nav_books -> BooksFragment()
-                R.id.nav_members -> MembersFragment()
-                R.id.nav_history -> BorrowingHistoryFragment()
+                R.id.nav_home -> DashboardFragment().apply {
+                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
+                }
+
+                R.id.nav_books -> BooksFragment().apply {
+                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
+                }
+
+                R.id.nav_members -> MembersFragment().apply {
+                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
+                }
+
+                R.id.nav_history -> BorrowingHistoryFragment().apply {
+                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
+                }
+
                 else -> null
             }
 
@@ -53,7 +64,10 @@ class AppMenuFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
     }
+
     fun setSelectedBottomTab(itemId: Int) {
-        binding.bottomNav.selectedItemId = itemId
+        binding.bottomNav.menu
+            .findItem(itemId)
+            .isChecked = true
     }
 }

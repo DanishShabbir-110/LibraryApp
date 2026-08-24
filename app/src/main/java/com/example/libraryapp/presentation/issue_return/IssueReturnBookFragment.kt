@@ -138,12 +138,12 @@ class IssueReturnBookFragment : Fragment() {
                         Toast.makeText(
                             requireContext(), state.successMessage, Toast.LENGTH_SHORT
                         ).show()
-
+                        val fragment= BorrowingHistoryFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
                         parentFragmentManager
                             .beginTransaction()
                             .replace(
                                 com.example.libraryapp.R.id.fragmentContainer,
-                                BorrowingHistoryFragment()
+                                fragment
                             )
                             .addToBackStack(null)
                             .commit()

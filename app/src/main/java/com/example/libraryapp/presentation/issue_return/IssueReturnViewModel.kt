@@ -45,7 +45,7 @@ class IssueReturnViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        books = books,
+                        books = books.filter { it.availableCopies>0 },
                         members = members
                     )
                 }

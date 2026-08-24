@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,8 +14,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
 import com.example.libraryapp.domain.model.BorrowingStatus
+import com.example.libraryapp.presentation.AppMenuFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,6 +42,7 @@ class BorrowingHistoryFragment : Fragment() {
         setupRecyclerView()
         observeUiState()
         setupSearch()
+        setupBackArrow()
         setupStatusDropdown()
         setupListeners()
     }
@@ -46,9 +50,17 @@ class BorrowingHistoryFragment : Fragment() {
     private fun setupListeners() {
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
+            (parentFragment as? AppMenuFragment)
+                ?.setSelectedBottomTab(R.id.nav_home)
         }
     }
+    private fun setupBackArrow() {
 
+        val showBackArrow =
+            arguments?.getBoolean("showBackArrow", false) ?: false
+
+        binding.ivBack.isVisible = showBackArrow
+    }
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(
@@ -56,6 +68,8 @@ class BorrowingHistoryFragment : Fragment() {
             ) {
                 viewModel.uiState.collect { state ->
                     borrowingHistoryAdapter.submitList(state.borrowList)
+                    binding.tvNoData.isVisible=state.borrowList.isEmpty()&&!state.isLoading
+                    binding.rvBorrowingHistory.isVisible=state.borrowList.isNotEmpty()
                     state.errorMessage?.let { message ->
                         Toast.makeText(
                             requireContext(),

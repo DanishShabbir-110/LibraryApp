@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
 import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.presentation.AppMenuFragment
 import com.example.libraryapp.presentation.books.addbooks.AddBookFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,6 +50,7 @@ class BooksFragment : Fragment() {
 
         setupRecyclerView()
         setupClickListeners()
+        setupBackArrow()
         observeUiState()
         setupSearch()
 
@@ -60,6 +62,8 @@ class BooksFragment : Fragment() {
                 viewModel.uiState.collect { state ->
                     bookAdapter.submitList(state.books)
                     binding.loadingOverlay.isVisible = state.isLoading
+                    binding.tvNoData.isVisible = state.books.isEmpty() && !state.isLoading
+                    binding.rvBooks.isVisible = state.books.isNotEmpty()
                     state.errorMessage?.let { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                         viewModel.clearError()
@@ -114,6 +118,8 @@ class BooksFragment : Fragment() {
 
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
+            (parentFragment as? AppMenuFragment)
+                ?.setSelectedBottomTab(R.id.nav_home)
         }
 
     }
@@ -131,5 +137,13 @@ class BooksFragment : Fragment() {
                 editable?.toString().orEmpty()
             )
         }
+    }
+
+    private fun setupBackArrow() {
+
+        val showBackArrow =
+            arguments?.getBoolean("showBackArrow", false) ?: false
+
+        binding.ivBack.isVisible = showBackArrow
     }
 }

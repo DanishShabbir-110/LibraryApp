@@ -47,9 +47,10 @@ class DashboardFragment : Fragment() {
 
     private fun setupActionListeners() {
         binding.clBooks.setOnClickListener {
+            val fragment= BooksFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
             parentFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, BooksFragment())
+                .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit()
 
@@ -57,9 +58,10 @@ class DashboardFragment : Fragment() {
                 ?.setSelectedBottomTab(R.id.nav_books)
         }
         binding.clMembers.setOnClickListener {
+            val fragment= MembersFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
             parentFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, MembersFragment())
+                .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit()
             (parentFragment as? AppMenuFragment)

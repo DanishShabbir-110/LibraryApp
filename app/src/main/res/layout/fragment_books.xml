@@ -111,6 +111,19 @@
         app:layout_constraintTop_toBottomOf="@id/cardSearch"
         tools:listitem="@layout/item_book"/>
 
+    <TextView
+        android:id="@+id/tvNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No books added yet"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/rvBooks"
+        app:layout_constraintBottom_toBottomOf="@id/rvBooks"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddBook"
         android:layout_width="64dp"

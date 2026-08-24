@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
 import com.example.libraryapp.domain.model.Member
+import com.example.libraryapp.presentation.AppMenuFragment
 import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +49,7 @@ class MembersFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         observeUiState()
+        setupBackArrow()
     }
 
     private fun observeUiState() {
@@ -56,7 +59,8 @@ class MembersFragment : Fragment() {
             ) {
                 viewModel.uiState.collect { state ->
                     memberAdapter.submitList(state.members)
-
+                    binding.tvNoData.isVisible=state.members.isEmpty()&&!state.isLoading
+                    binding.rvMembers.isVisible=state.members.isNotEmpty()
                     state.errorMessage?.let { message ->
 
                         Toast.makeText(
@@ -104,6 +108,8 @@ class MembersFragment : Fragment() {
 
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
+            (parentFragment as? AppMenuFragment)
+                ?.setSelectedBottomTab(R.id.nav_home)
         }
     }
 
@@ -116,6 +122,13 @@ class MembersFragment : Fragment() {
                     editable?.toString().orEmpty()
                 )
             }
+    }
+    private fun setupBackArrow() {
+
+        val showBackArrow =
+            arguments?.getBoolean("showBackArrow", false) ?: false
+
+        binding.ivBack.isVisible = showBackArrow
     }
 
     private fun showDeleteDialog(member: Member) {
