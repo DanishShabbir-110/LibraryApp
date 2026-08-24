@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="10dp"
+        app:itemActiveIndicatorStyle="@null"
         android:theme="@style/MyBottomNavTheme"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"

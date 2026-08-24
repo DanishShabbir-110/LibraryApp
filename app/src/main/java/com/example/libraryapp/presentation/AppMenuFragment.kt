@@ -53,5 +53,7 @@ class AppMenuFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
     }
-
+    fun setSelectedBottomTab(itemId: Int) {
+        binding.bottomNav.selectedItemId = itemId
+    }
 }

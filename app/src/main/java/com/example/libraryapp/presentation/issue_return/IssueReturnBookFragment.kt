@@ -15,8 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.libraryapp.databinding.FragmentIssueReturnBookBinding
+import com.example.libraryapp.presentation.AppMenuFragment
 import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
-import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -147,7 +147,10 @@ class IssueReturnBookFragment : Fragment() {
                             )
                             .addToBackStack(null)
                             .commit()
-
+                        (parentFragment as? AppMenuFragment)
+                            ?.setSelectedBottomTab(com.example.libraryapp.R.id.nav_history)
+                        viewModel.clearForm()
+                        viewModel.clearSuccess()
                     }
                 }
             }

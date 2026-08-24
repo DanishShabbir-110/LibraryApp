@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.cases.borrowbooks.IssueBookUseCase
 import com.example.libraryapp.domain.cases.borrowbooks.ReturnBookUseCase
 import com.example.libraryapp.domain.model.Book
-import com.example.libraryapp.domain.model.BorrowBook
 import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
 import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
@@ -14,7 +13,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,7 +41,7 @@ class IssueReturnViewModel @Inject constructor(
                 getMembersUseCase()
             ) { books, members ->
                 books to members
-            }.collect { (books, members) ->
+            }.collectLatest { (books, members) ->
 
                 _uiState.update {
                     it.copy(
@@ -54,7 +53,7 @@ class IssueReturnViewModel @Inject constructor(
         }
     }
 
-    fun selectMember(member: Member){
+    fun selectMember(member: Member) {
         _uiState.update {
             it.copy(
                 selectedMember = member,
@@ -63,7 +62,7 @@ class IssueReturnViewModel @Inject constructor(
         }
     }
 
-    fun selectBook(book: Book){
+    fun selectBook(book: Book) {
         _uiState.update {
             it.copy(
                 selectedBook = book,
@@ -72,14 +71,15 @@ class IssueReturnViewModel @Inject constructor(
         }
     }
 
-    fun selectIssueDate(date: Long){
+    fun selectIssueDate(date: Long) {
         _uiState.update {
             it.copy(
                 issueDate = date
             )
         }
     }
-    fun selectReturnDate(date:Long){
+
+    fun selectReturnDate(date: Long) {
         _uiState.update {
             it.copy(
                 returnDate = date
@@ -87,28 +87,28 @@ class IssueReturnViewModel @Inject constructor(
         }
     }
 
-    fun issueBook(){
-        val state=_uiState.value
+    fun issueBook() {
+        val state = _uiState.value
 
-        val member=state.selectedMember
-        val book=state.selectedBook
-        val issueDate=state.issueDate
+        val member = state.selectedMember
+        val book = state.selectedBook
+        val issueDate = state.issueDate
 
-        if(member==null){
+        if (member == null) {
             showError("Please Select a member.")
             return
         }
-        if(book==null){
+        if (book == null) {
             showError("Please Select a book.")
             return
         }
-        if(issueDate==null){
+        if (issueDate == null) {
             showError("Please Select Issue Date.")
             return
         }
 
         viewModelScope.launch {
-            try{
+            try {
                 _uiState.update {
                     it.copy(
                         isLoading = true,
@@ -129,39 +129,39 @@ class IssueReturnViewModel @Inject constructor(
                         successMessage = "Issue Book Successfully"
                     )
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.message?:"Failed to issue a book."
+                        errorMessage = e.message ?: "Failed to issue a book."
                     )
                 }
             }
         }
     }
 
-    fun returnBook(){
-        val state=_uiState.value
+    fun returnBook() {
+        val state = _uiState.value
 
-        val member=state.selectedMember
-        val book=state.selectedBook
-        val returnDate=state.returnDate
+        val member = state.selectedMember
+        val book = state.selectedBook
+        val returnDate = state.returnDate
 
-        if(member==null){
+        if (member == null) {
             showError("Please Select a member.")
             return
         }
-        if(book==null){
+        if (book == null) {
             showError("Please Select a book.")
             return
         }
-        if(returnDate==null){
+        if (returnDate == null) {
             showError("Please Select Return Date.")
             return
         }
 
         viewModelScope.launch {
-            try{
+            try {
                 _uiState.update {
                     it.copy(
                         isLoading = true,
@@ -182,11 +182,11 @@ class IssueReturnViewModel @Inject constructor(
                         successMessage = "Return Book Successfully"
                     )
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.message?:"Failed to Return a book."
+                        errorMessage = e.message ?: "Failed to Return a book."
                     )
                 }
             }
@@ -221,4 +221,7 @@ class IssueReturnViewModel @Inject constructor(
         }
     }
 
+    fun clearForm() {
+        _uiState.value = IssueReturnUiState()
+    }
 }

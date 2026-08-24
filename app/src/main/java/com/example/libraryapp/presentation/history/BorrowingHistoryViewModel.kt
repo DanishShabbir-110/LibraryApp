@@ -4,13 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.cases.borrowbooks.GetBorrowBooksUseCase
 import com.example.libraryapp.domain.model.BorrowingStatus
-import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
-import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,17 +26,17 @@ class BorrowingHistoryViewModel @Inject constructor(
 
     private fun getBorrowBooks() {
         viewModelScope.launch {
-            getBorrowBooksUseCase().collectLatest{ borrowingHistory ->
-               allBooks=borrowingHistory.map {borrowBook ->
-                   BorrowingHistoryItem(
-                       borrowingId = borrowBook.id,
-                       memberName = borrowBook.memberName,
-                       bookName = borrowBook.bookName,
-                       issueDate = borrowBook.issueDate,
-                       returnDate = borrowBook.returnDate,
-                       status = borrowBook.status
-                   )
-               }
+            getBorrowBooksUseCase().collectLatest { borrowingHistory ->
+                allBooks = borrowingHistory.map { borrowBook ->
+                    BorrowingHistoryItem(
+                        borrowingId = borrowBook.id,
+                        memberName = borrowBook.memberName,
+                        bookName = borrowBook.bookName,
+                        issueDate = borrowBook.issueDate,
+                        returnDate = borrowBook.returnDate,
+                        status = borrowBook.status
+                    )
+                }
                 _uiState.update {
                     it.copy(
                         borrowList = allBooks,
@@ -65,8 +62,13 @@ class BorrowingHistoryViewModel @Inject constructor(
             allBooks
         } else {
             allBooks.filter { borrowingBook ->
-                borrowingBook.bookName.contains(query, ignoreCase = true) ||
-                        borrowingBook.memberName.contains(query, ignoreCase = true)
+                borrowingBook.bookName.contains(
+                    query,
+                    ignoreCase = true
+                ) || borrowingBook.memberName.contains(
+                    query,
+                    ignoreCase = true
+                )
             }
         }
 
@@ -76,6 +78,7 @@ class BorrowingHistoryViewModel @Inject constructor(
             )
         }
     }
+
     fun filterByStatus(filter: BorrowingStatus) {
 
         val filteredList = when (filter) {

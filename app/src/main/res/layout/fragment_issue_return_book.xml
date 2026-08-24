@@ -137,7 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSelectBook"
-            app:startIconDrawable="@drawable/iv_books"
+            app:startIconDrawable="@drawable/ic_books_category"
             app:startIconTint="@color/text_secondary">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView

@@ -29,11 +29,7 @@ class BorrowingHistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBrowsingHistoryBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        _binding = FragmentBrowsingHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,6 +40,13 @@ class BorrowingHistoryFragment : Fragment() {
         observeUiState()
         setupSearch()
         setupStatusDropdown()
+        setupListeners()
+    }
+
+    private fun setupListeners() {
+        binding.ivBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     private fun observeUiState() {

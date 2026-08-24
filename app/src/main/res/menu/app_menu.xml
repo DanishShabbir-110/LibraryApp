@@ -5,19 +5,19 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/iv_home"
+        android:icon="@drawable/nav_home_selector"
         android:title="Home"/>
     <item
         android:id="@+id/nav_books"
-        android:icon="@drawable/iv_books"
+        android:icon="@drawable/nav_book_selector"
         android:title="Books"/>
     <item
         android:id="@+id/nav_members"
-        android:icon="@drawable/iv_members"
+        android:icon="@drawable/nav_member_selector"
         android:title="Members"/>
     <item
         android:id="@+id/nav_history"
-        android:icon="@drawable/iv_history"
+        android:icon="@drawable/nav_history_selector"
         android:title="History"/>
 
 
