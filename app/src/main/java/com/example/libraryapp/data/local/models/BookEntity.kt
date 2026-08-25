@@ -13,4 +13,4 @@ data class BookEntity(
     val category:String,
     val totalCopies:Int,
     val availableCopies :Int
-): Serializable
+)

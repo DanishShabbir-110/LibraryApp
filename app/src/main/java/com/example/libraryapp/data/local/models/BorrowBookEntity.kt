@@ -15,4 +15,4 @@ data class BorrowBookEntity(
     val issueDate:Long,
     val returnDate:Long?=null,
     val status:String
-): Serializable
+)

@@ -11,4 +11,4 @@ data class MemberEntity(
     val name:String,
     val email:String,
     val phone:String
-): Serializable
+)
