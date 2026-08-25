@@ -16,5 +16,19 @@
 
         <item name="android:windowLightStatusBar">false</item>
     </style>
+    <style name="Theme.LibraryApp.Splash"
+        parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/background</item>
+
+        <item name="windowSplashScreenAnimatedIcon">
+            @drawable/applogo
+        </item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.LibraryApp
+        </item>
+
+    </style>
 
 </resources>

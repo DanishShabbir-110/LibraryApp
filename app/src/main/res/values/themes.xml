@@ -24,4 +24,20 @@
         <item name="colorOnSecondaryContainer">@color/primary</item>
     </style>
 
+
+    <!-- Splash Theme -->
+    <style name="Theme.LibraryApp.Splash"
+        parent="Theme.SplashScreen">
+
+        <!-- Splash background -->
+        <item name="windowSplashScreenBackground">@color/background</item>
+
+        <!-- Splash logo -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/applogo</item>
+
+        <!-- After splash -->
+        <item name="postSplashScreenTheme">@style/Theme.LibraryApp</item>
+
+    </style>
+
 </resources>
