@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.libraryapp.presentation.dashboard.DashboardFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_books"
+        android:name="com.example.libraryapp.presentation.books.BooksFragment"
+        android:label="Books"
+        tools:layout="@layout/fragment_books">
+
+        <argument
+            android:name="showBackArrow"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_members"
+        android:name="com.example.libraryapp.presentation.members.MembersFragment"
+        android:label="Members"
+        tools:layout="@layout/fragment_members">
+
+        <argument
+            android:name="showBackArrow"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/borrowHistoryFragment"
+        android:name="com.example.libraryapp.presentation.history.BorrowingHistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_browsing_history">
+
+        <argument
+            android:name="showBackArrow"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBookFragment"
+        android:name="com.example.libraryapp.presentation.books.addbooks.AddBookFragment"
+        android:label="Add Book"
+        tools:layout="@layout/fragment_add_book">
+
+        <argument
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/addMemberFragment"
+        android:name="com.example.libraryapp.presentation.members.addmember.AddMemberFragment"
+        android:label="Add Member"
+        tools:layout="@layout/fragment_add_member">
+
+        <argument
+            android:name="memberId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/issueReturnBookFragment"
+        android:name="com.example.libraryapp.presentation.issue_return.IssueReturnBookFragment"
+        android:label="Issue / Return"
+        tools:layout="@layout/fragment_issue_return_book" />
+
+</navigation>

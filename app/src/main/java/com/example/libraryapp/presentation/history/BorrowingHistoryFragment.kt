@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
@@ -49,9 +50,7 @@ class BorrowingHistoryFragment : Fragment() {
 
     private fun setupListeners() {
         binding.ivBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-            (parentFragment as? AppMenuFragment)
-                ?.setSelectedBottomTab(R.id.nav_home)
+            findNavController().popBackStack()
         }
     }
     private fun setupBackArrow() {

@@ -3,6 +3,7 @@ package com.example.libraryapp.presentation.books.addbooks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.domain.model.BookCategory
 import com.example.libraryapp.domain.usecases.books.AddBookUseCase
 import com.example.libraryapp.domain.usecases.books.GetBookByIdUseCase
 import com.example.libraryapp.domain.usecases.books.UpdateBookUseCase
@@ -73,17 +74,23 @@ class AddBookViewModel @Inject constructor(
                         id = state.id,
                         name = state.name.trim(),
                         author = state.author.trim(),
-                        category = state.category.trim(),
+                        category = BookCategory.valueOf(state.category.trim()),
                         totalCopies = copies,
                         availableCopies = copies - borrowCopies
                     )
                     updateBookUseCase(updateBook)
                 }else{
-
+                    val selectedCateory= BookCategory.entries.find {
+                        it.name.equals(state.category,ignoreCase = true)
+                    }
+                    if(selectedCateory==null){
+                        showError("Please select a valid category")
+                        return@launch
+                    }
                     val book = Book(
                         name = state.name.trim(),
                         author = state.author.trim(),
-                        category = state.category.trim(),
+                        category = selectedCateory,
                         totalCopies = copies,
                         availableCopies = copies
                     )
@@ -125,7 +132,7 @@ class AddBookViewModel @Inject constructor(
                         id = book.id,
                         name = book.name,
                         author = book.author,
-                        category = book.category,
+                        category = book.category.name,
                         totalCopies = book.totalCopies.toString(),
                         availableCopies = book.availableCopies,
                         isEditMode = true,

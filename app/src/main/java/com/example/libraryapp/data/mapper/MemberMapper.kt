@@ -1,6 +1,6 @@
 package com.example.libraryapp.data.mapper
 
-import com.example.libraryapp.data.local.models.MemberEntity
+import com.example.libraryapp.data.local.entities.MemberEntity
 import com.example.libraryapp.domain.model.Member
 
 fun MemberEntity.toDomain(): Member {

@@ -1,50 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/appMenuFragment">
 
     <fragment
-        android:id="@+id/dashboardFragment"
-        android:name="com.example.libraryapp.presentation.dashboard.DashboardFragment"
-        android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-    <fragment
         android:id="@+id/appMenuFragment"
         android:name="com.example.libraryapp.presentation.AppMenuFragment"
-        android:label="fragment_appmenu"
+        android:label="App Menu"
         tools:layout="@layout/fragment_appmenu" />
-    <fragment
-        android:id="@+id/booksFragment"
-        android:name="com.example.libraryapp.presentation.books.BooksFragment"
-        android:label="fragment_books"
-        tools:layout="@layout/fragment_books" />
-    <fragment
-        android:id="@+id/membersFragment"
-        android:name="com.example.libraryapp.presentation.members.MembersFragment"
-        android:label="fragment_members"
-        tools:layout="@layout/fragment_members" />
-    <fragment
-        android:id="@+id/issueReturnBookFragment"
-        android:name="com.example.libraryapp.presentation.issue_return.IssueReturnBookFragment"
-        android:label="fragment_issue_return_book"
-        tools:layout="@layout/fragment_issue_return_book" />
-    <fragment
-        android:id="@+id/addBookFragment"
-        android:name="com.example.libraryapp.presentation.books.addbooks.AddBookFragment"
-        android:label="fragment_add_book"
-        tools:layout="@layout/fragment_add_book" />
-    <fragment
-        android:id="@+id/addMemberFragment"
-        android:name="com.example.libraryapp.presentation.members.addmember.AddMemberFragment"
-        android:label="fragment_add_member"
-        tools:layout="@layout/fragment_add_member" />
-    <fragment
-        android:id="@+id/browsingHistoryFragment"
-        android:name="com.example.libraryapp.presentation.history.BorrowingHistoryFragment"
-        android:label="fragment_browsing_history"
-        tools:layout="@layout/fragment_browsing_history" />
-
 
 </navigation>

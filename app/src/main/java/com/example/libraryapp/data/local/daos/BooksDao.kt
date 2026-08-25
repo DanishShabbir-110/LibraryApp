@@ -5,8 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.libraryapp.data.local.models.BookEntity
-import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.data.local.entities.BookEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

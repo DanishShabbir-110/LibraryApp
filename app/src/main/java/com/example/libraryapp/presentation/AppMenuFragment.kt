@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAppmenuBinding
 import com.example.libraryapp.presentation.books.BooksFragment
@@ -27,47 +29,19 @@ class AppMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            replaceFragment(DashboardFragment())
-        }
-
-        binding.bottomNav.setOnItemSelectedListener { item ->
-            val selectedFragment: Fragment? = when (item.itemId) {
-                R.id.nav_home -> DashboardFragment().apply {
-                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
-                }
-
-                R.id.nav_books -> BooksFragment().apply {
-                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
-                }
-
-                R.id.nav_members -> MembersFragment().apply {
-                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
-                }
-
-                R.id.nav_history -> BorrowingHistoryFragment().apply {
-                    arguments = Bundle().apply { putBoolean("showBackArrow", false) }
-                }
-
-                else -> null
-            }
-
-            selectedFragment?.let {
-                replaceFragment(it)
-                return@setOnItemSelectedListener true
-            }
-            false
-        }
-
+       setupBottomNavigation()
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
+    private fun setupBottomNavigation() {
+        val navHostFragment=childFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+
+        val navController=navHostFragment.navController
+
+        binding.bottomNav.setupWithNavController(navController)
     }
 
-    fun setSelectedBottomTab(itemId: Int) {
-        binding.bottomNav.menu
-            .findItem(itemId)
-            .isChecked = true
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
     }
 }

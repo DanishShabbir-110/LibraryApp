@@ -1,8 +1,7 @@
-package com.example.libraryapp.data.local.models
+package com.example.libraryapp.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.io.Serializable
 
 @Entity("Member")
 data class MemberEntity(

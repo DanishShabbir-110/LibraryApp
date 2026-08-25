@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
@@ -82,13 +83,11 @@ class MembersFragment : Fragment() {
                 showDeleteDialog(member)
             },
             onUpdateClick = { member ->
-                val addMember = AddMemberFragment().apply {
-                    arguments = Bundle().apply {
+                val bundle=Bundle().apply {
                         putInt("memberId", member.id)
                     }
-                }
-                parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, addMember)
-                    .addToBackStack(null).commit()
+
+               findNavController().navigate(R.id.addMemberFragment,bundle)
             }
         )
         binding.rvMembers.apply {
@@ -99,17 +98,11 @@ class MembersFragment : Fragment() {
 
     fun setupClickListeners() {
         binding.fabAddMember.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, AddMemberFragment())
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.addMemberFragment)
         }
 
         binding.ivBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-            (parentFragment as? AppMenuFragment)
-                ?.setSelectedBottomTab(R.id.nav_home)
+            findNavController().popBackStack()
         }
     }
 

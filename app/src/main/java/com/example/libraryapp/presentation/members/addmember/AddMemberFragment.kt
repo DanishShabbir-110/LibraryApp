@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAddMemberBinding
 import com.example.libraryapp.presentation.books.addbooks.AddBookViewModel
@@ -129,7 +130,7 @@ class AddMemberFragment : Fragment() {
                         viewModel.clearForm()
                         viewModel.resetSuccessState()
 
-                        parentFragmentManager.popBackStack()
+                        findNavController().popBackStack()
                     }
 
                 }
@@ -142,7 +143,7 @@ class AddMemberFragment : Fragment() {
             viewModel.saveMember()
         }
         binding.ivBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
     }
 }

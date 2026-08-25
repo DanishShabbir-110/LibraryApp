@@ -3,9 +3,7 @@ package com.example.libraryapp.data.local.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
-import com.example.libraryapp.data.local.models.BorrowBookEntity
-import com.example.libraryapp.domain.model.BorrowBook
+import com.example.libraryapp.data.local.entities.BorrowBookEntity
 import com.example.libraryapp.domain.model.BorrowingStatus
 import kotlinx.coroutines.flow.Flow
 

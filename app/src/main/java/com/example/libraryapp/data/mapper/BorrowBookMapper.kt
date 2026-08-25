@@ -1,6 +1,6 @@
 package com.example.libraryapp.data.mapper
 
-import com.example.libraryapp.data.local.models.BorrowBookEntity
+import com.example.libraryapp.data.local.entities.BorrowBookEntity
 import com.example.libraryapp.domain.model.BorrowBook
 import com.example.libraryapp.domain.model.BorrowingStatus
 

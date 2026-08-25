@@ -9,10 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentDashboardBinding
 import com.example.libraryapp.presentation.AppMenuFragment
-import com.example.libraryapp.presentation.books.BooksFragment
 import com.example.libraryapp.presentation.issue_return.IssueReturnBookFragment
 import com.example.libraryapp.presentation.members.MembersFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,32 +47,15 @@ class DashboardFragment : Fragment() {
 
     private fun setupActionListeners() {
         binding.clBooks.setOnClickListener {
-            val fragment= BooksFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit()
-
-            (parentFragment as? AppMenuFragment)
-                ?.setSelectedBottomTab(R.id.nav_books)
+            val bundle = Bundle().apply { putBoolean("showBackArrow", true) }
+            findNavController().navigate(R.id.nav_books,bundle)
         }
         binding.clMembers.setOnClickListener {
-            val fragment= MembersFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit()
-            (parentFragment as? AppMenuFragment)
-                ?.setSelectedBottomTab(R.id.nav_members)
+            val bundle = Bundle().apply { putBoolean("showBackArrow", true) }
+            findNavController().navigate(R.id.nav_members,bundle)
         }
         binding.clIssueReturn.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, IssueReturnBookFragment())
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.issueReturnBookFragment)
         }
     }
 

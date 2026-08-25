@@ -38,8 +38,8 @@ class BooksAdapter(
         fun binding(book: Book,onDeleteClick: (Book) -> Unit,onUpdateClick: (Book) -> Unit) {
             with(bind) {
                 tvBookTitle.text = book.name
-                tvBookAuthor.text = book.author
-                tvBookCategory.text = "Category: ${book.category}"
+                tvBookAuthor.text = "Author: ${book.author}"
+                tvBookCategory.text = "Category: ${book.category.displayName}"
                 tvBookAvailability.text = "Avialable: ${book.availableCopies} / ${book.totalCopies}"
                 ivDeleteBook.setOnClickListener {
                     onDeleteClick(book)

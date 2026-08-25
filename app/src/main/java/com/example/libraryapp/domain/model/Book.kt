@@ -4,7 +4,7 @@ data class Book(
     val id: Int = 0,
     val name: String,
     val author: String,
-    val category: String,
+    val category: BookCategory,
     val totalCopies: Int,
     val availableCopies: Int
 )

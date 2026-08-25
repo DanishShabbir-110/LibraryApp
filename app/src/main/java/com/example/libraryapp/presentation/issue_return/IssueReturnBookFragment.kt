@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentIssueReturnBookBinding
 import com.example.libraryapp.presentation.AppMenuFragment
 import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
@@ -138,17 +139,8 @@ class IssueReturnBookFragment : Fragment() {
                         Toast.makeText(
                             requireContext(), state.successMessage, Toast.LENGTH_SHORT
                         ).show()
-                        val fragment= BorrowingHistoryFragment().apply { arguments = Bundle().apply { putBoolean("showBackArrow",true) }}
-                        parentFragmentManager
-                            .beginTransaction()
-                            .replace(
-                                com.example.libraryapp.R.id.fragmentContainer,
-                                fragment
-                            )
-                            .addToBackStack(null)
-                            .commit()
-                        (parentFragment as? AppMenuFragment)
-                            ?.setSelectedBottomTab(com.example.libraryapp.R.id.nav_history)
+                        val bundle = Bundle().apply { putBoolean("showBackArrow",true) }
+                       findNavController().navigate(com.example.libraryapp.R.id.borrowHistoryFragment,bundle)
                         viewModel.clearForm()
                         viewModel.clearSuccess()
                     }

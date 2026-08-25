@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
@@ -82,10 +83,7 @@ class BooksFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putInt("bookId", book.id)
                 }
-                val addBookFragment = AddBookFragment()
-                addBookFragment.arguments = bundle
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, addBookFragment).addToBackStack(null).commit()
+                findNavController().navigate(R.id.addBookFragment,bundle)
             }
         )
 
@@ -109,17 +107,11 @@ class BooksFragment : Fragment() {
     fun setupClickListeners() {
 
         binding.fabAddBook.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, AddBookFragment())
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.addBookFragment)
         }
 
         binding.ivBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-            (parentFragment as? AppMenuFragment)
-                ?.setSelectedBottomTab(R.id.nav_home)
+            findNavController().popBackStack()
         }
 
     }

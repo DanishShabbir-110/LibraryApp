@@ -63,7 +63,7 @@ class BookViewModel @Inject constructor(
             allBooks.filter { book ->
                 book.name.contains(query, ignoreCase = true) ||
                         book.author.contains(query, ignoreCase = true) ||
-                        book.category.contains(query, ignoreCase = true)
+                        book.category.name.contains(query, ignoreCase = true)
             }
         }
 

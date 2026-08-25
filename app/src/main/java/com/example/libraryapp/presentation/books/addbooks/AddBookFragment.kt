@@ -14,7 +14,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentAddBookBinding
+import com.example.libraryapp.domain.model.BookCategory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -80,7 +82,9 @@ class AddBookFragment : Fragment() {
     }
 
     private fun setupDropDown() {
-        val categoryList = listOf("Programing", "Database", "Research")
+        val categoryList = BookCategory.entries.map {
+            it.name.lowercase().replaceFirstChar { char-> char.uppercase() }
+        }
         val adapter =
             ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, categoryList)
         binding.actCategory.setAdapter(adapter)
@@ -143,7 +147,7 @@ class AddBookFragment : Fragment() {
                         viewModel.clearForm()
                         viewModel.resetSuccessState()
 
-                        parentFragmentManager.popBackStack()
+                        findNavController().popBackStack()
                     }
 
                 }
@@ -156,7 +160,7 @@ class AddBookFragment : Fragment() {
             viewModel.saveBook()
         }
         binding.ivBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
     }
 

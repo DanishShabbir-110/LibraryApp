@@ -2,7 +2,7 @@ package com.example.libraryapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.libraryapp.data.local.LibraryDatabase
+import com.example.libraryapp.data.local.database.LibraryDatabase
 import com.example.libraryapp.data.local.daos.BooksDao
 import com.example.libraryapp.data.local.daos.BorrowBookDao
 import com.example.libraryapp.data.local.daos.MembersDao
