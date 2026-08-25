@@ -40,7 +40,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/borrowHistoryFragment"
+        android:id="@+id/nav_history"
         android:name="com.example.libraryapp.presentation.history.BorrowingHistoryFragment"
         android:label="History"
         tools:layout="@layout/fragment_browsing_history">

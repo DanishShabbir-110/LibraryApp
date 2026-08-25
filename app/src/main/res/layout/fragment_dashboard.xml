@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -48,6 +50,8 @@
             app:layout_constraintEnd_toEndOf="@id/tvHeader"
             app:layout_constraintStart_toStartOf="@id/tvHeader"
             app:layout_constraintTop_toBottomOf="@id/tvHeader" />
+
+        <!-- Total Books -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTotalBooks"
@@ -111,6 +115,8 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Available Books -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAvailableBooks"
             android:layout_width="0dp"
@@ -171,6 +177,8 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Borrowed Books -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardBorrowedBooks"
@@ -234,6 +242,8 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Total Members -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTotalMembers"
             android:layout_width="0dp"
@@ -295,162 +305,70 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Issue / Return Heading -->
+
         <TextView
-            android:id="@+id/tvQuickActionTitle"
+            android:id="@+id/tvIssueReturnTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
-            android:layout_marginTop="18dp"
-            android:text="Quick Actions"
+            android:layout_marginTop="20dp"
+            android:text="Issue / Return Book"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardBorrowedBooks" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardBooks"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="5dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="#EEF3FF"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toStartOf="@id/cardMembers"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvQuickActionTitle">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clBooks"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivBooksAction"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/iv_books"
-                    app:layout_constraintBottom_toTopOf="@id/tvBooksAction"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    app:tint="@color/primary" />
-
-                <TextView
-                    android:id="@+id/tvBooksAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Books"
-                    android:textColor="@color/text_primary"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivBooksAction" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardMembers"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="#EAF9F4"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toStartOf="@id/cardIssueReturn"
-            app:layout_constraintStart_toEndOf="@id/cardBooks"
-            app:layout_constraintTop_toTopOf="@id/cardBooks">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clMembers"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivMembersAction"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:src="@drawable/iv_members"
-                    app:layout_constraintBottom_toTopOf="@id/tvMembersAction"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    app:tint="@color/success" />
-
-                <TextView
-                    android:id="@+id/tvMembersAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Members"
-                    android:textColor="@color/text_primary"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivMembersAction" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+        <!-- Single Issue / Return Action -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIssueReturn"
             android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="14dp"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="#FFF7E9"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cardMembers"
-            app:layout_constraintTop_toTopOf="@id/cardBooks">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvIssueReturnTitle">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clIssueReturn"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp">
 
                 <ImageView
                     android:id="@+id/ivIssueReturn"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:src="@drawable/iv_issue_return"
-                    app:layout_constraintBottom_toTopOf="@id/tvIssueReturn"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
                     app:tint="@color/warning" />
 
                 <TextView
                     android:id="@+id/tvIssueReturn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Issue / Return"
+                    android:layout_marginStart="16dp"
+                    android:text="Issue or Return a Book"
                     android:textColor="@color/text_primary"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ivIssueReturn"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivIssueReturn" />
+                    app:layout_constraintStart_toEndOf="@id/ivIssueReturn"
+                    app:layout_constraintTop_toTopOf="@id/ivIssueReturn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -459,13 +377,12 @@
         <View
             android:id="@+id/bottomSpace"
             android:layout_width="1dp"
-            android:layout_height="16dp"
+            android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardBooks" />
+            app:layout_constraintTop_toBottomOf="@id/cardIssueReturn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.core.widget.NestedScrollView>

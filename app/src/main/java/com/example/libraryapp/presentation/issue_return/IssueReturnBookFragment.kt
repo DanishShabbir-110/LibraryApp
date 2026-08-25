@@ -140,7 +140,7 @@ class IssueReturnBookFragment : Fragment() {
                             requireContext(), state.successMessage, Toast.LENGTH_SHORT
                         ).show()
                         val bundle = Bundle().apply { putBoolean("showBackArrow",true) }
-                       findNavController().navigate(com.example.libraryapp.R.id.borrowHistoryFragment,bundle)
+                       findNavController().navigate(com.example.libraryapp.R.id.nav_history,bundle)
                         viewModel.clearForm()
                         viewModel.clearSuccess()
                     }

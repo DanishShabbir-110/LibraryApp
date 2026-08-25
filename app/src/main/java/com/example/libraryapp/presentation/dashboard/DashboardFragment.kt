@@ -46,14 +46,6 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupActionListeners() {
-        binding.clBooks.setOnClickListener {
-            val bundle = Bundle().apply { putBoolean("showBackArrow", true) }
-            findNavController().navigate(R.id.nav_books,bundle)
-        }
-        binding.clMembers.setOnClickListener {
-            val bundle = Bundle().apply { putBoolean("showBackArrow", true) }
-            findNavController().navigate(R.id.nav_members,bundle)
-        }
         binding.clIssueReturn.setOnClickListener {
             findNavController().navigate(R.id.issueReturnBookFragment)
         }
