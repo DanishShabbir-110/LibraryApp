@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
 import com.example.libraryapp.domain.model.Member
-import com.example.libraryapp.presentation.AppMenuFragment
-import com.example.libraryapp.presentation.members.addmember.AddMemberFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -50,7 +48,6 @@ class MembersFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         observeUiState()
-        setupBackArrow()
     }
 
     private fun observeUiState() {
@@ -60,8 +57,8 @@ class MembersFragment : Fragment() {
             ) {
                 viewModel.uiState.collect { state ->
                     memberAdapter.submitList(state.members)
-                    binding.tvNoData.isVisible=state.members.isEmpty()&&!state.isLoading
-                    binding.rvMembers.isVisible=state.members.isNotEmpty()
+                    binding.tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
+                    binding.rvMembers.isVisible = state.members.isNotEmpty()
                     state.errorMessage?.let { message ->
 
                         Toast.makeText(
@@ -83,11 +80,11 @@ class MembersFragment : Fragment() {
                 showDeleteDialog(member)
             },
             onUpdateClick = { member ->
-                val bundle=Bundle().apply {
-                        putInt("memberId", member.id)
-                    }
+                val bundle = Bundle().apply {
+                    putInt("memberId", member.id)
+                }
 
-               findNavController().navigate(R.id.addMemberFragment,bundle)
+                findNavController().navigate(R.id.addMemberFragment, bundle)
             }
         )
         binding.rvMembers.apply {
@@ -99,10 +96,6 @@ class MembersFragment : Fragment() {
     fun setupClickListeners() {
         binding.fabAddMember.setOnClickListener {
             findNavController().navigate(R.id.addMemberFragment)
-        }
-
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
         }
     }
 
@@ -116,13 +109,7 @@ class MembersFragment : Fragment() {
                 )
             }
     }
-    private fun setupBackArrow() {
 
-        val showBackArrow =
-            arguments?.getBoolean("showBackArrow", false) ?: false
-
-        binding.ivBack.isVisible = showBackArrow
-    }
 
     private fun showDeleteDialog(member: Member) {
         MaterialAlertDialogBuilder(requireContext())

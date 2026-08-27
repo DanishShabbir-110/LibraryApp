@@ -2,4 +2,13 @@
     <string name="app_name">LibraryApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_book">Delete Book</string>
+    <string name="are_you_sure_want_to_delete_this_book">Are you sure want to delete this book.</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="update_book">Update Book</string>
+    <string name="add_book">Add Book</string>
+    <string name="all">All</string>
+    <string name="update_member">Update Member</string>
+    <string name="save_member">Save Member</string>
 </resources>

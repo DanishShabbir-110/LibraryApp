@@ -24,20 +24,4 @@ abstract class LibraryDatabase : RoomDatabase() {
     abstract fun getBookDao(): BooksDao
     abstract fun getMemberDao(): MembersDao
     abstract fun getBorrowBookDao(): BorrowBookDao
-
-    companion object {
-        private var INSTANCE: LibraryDatabase?=null
-        fun getDatabase(context: Context): LibraryDatabase{
-            return INSTANCE?:synchronized(this){
-                val instance= Room.databaseBuilder(
-                    context.applicationContext,
-                    LibraryDatabase::class.java,
-                    "Library Database"
-                ).build()
-                INSTANCE=instance
-                instance
-            }
-        }
-    }
-
 }

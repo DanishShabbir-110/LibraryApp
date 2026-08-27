@@ -12,9 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentDashboardBinding
-import com.example.libraryapp.presentation.AppMenuFragment
-import com.example.libraryapp.presentation.issue_return.IssueReturnBookFragment
-import com.example.libraryapp.presentation.members.MembersFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,17 +26,12 @@ class DashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDashboardBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         setupActionListeners()
         observeUiState()
@@ -57,10 +49,12 @@ class DashboardFragment : Fragment() {
                 Lifecycle.State.STARTED
             ) {
                 viewModel.uiState.collect { state ->
-                    binding.tvTotalBooks.text = state.totalBooks.toString()
-                    binding.tvTotalMembers.text = state.totalMembers.toString()
-                    binding.tvAvailableBooks.text = state.availableBooks.toString()
-                    binding.tvBorrowedBooks.text = state.issuedBooks.toString()
+                    binding.apply {
+                        tvTotalBooks.text = state.totalBooks.toString()
+                        tvTotalMembers.text = state.totalMembers.toString()
+                        tvAvailableBooks.text = state.availableBooks.toString()
+                        tvBorrowedBooks.text = state.issuedBooks.toString()
+                    }
                 }
             }
         }

@@ -39,9 +39,7 @@ class BorrowingHistoryViewModel @Inject constructor(
                 }
                 _uiState.update {
                     it.copy(
-                        borrowList = allBooks,
-                        isLoading = false,
-                        errorMessage = null
+                        borrowList = allBooks, isLoading = false, errorMessage = null
                     )
                 }
             }
@@ -63,18 +61,16 @@ class BorrowingHistoryViewModel @Inject constructor(
         } else {
             allBooks.filter { borrowingBook ->
                 borrowingBook.bookName.contains(
-                    query,
-                    ignoreCase = true
+                    query, ignoreCase = true
                 ) || borrowingBook.memberName.contains(
-                    query,
-                    ignoreCase = true
+                    query, ignoreCase = true
                 )
             }
         }
 
         _uiState.update {
             it.copy(
-                filteredBooks
+                borrowList = filteredBooks
             )
         }
     }

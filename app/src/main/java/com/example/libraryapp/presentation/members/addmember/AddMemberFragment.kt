@@ -1,13 +1,13 @@
 package com.example.libraryapp.presentation.members.addmember
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,23 +15,20 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAddMemberBinding
-import com.example.libraryapp.presentation.books.addbooks.AddBookViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlin.getValue
+
 @AndroidEntryPoint
 class AddMemberFragment : Fragment() {
     private val viewModel: AddMemberViewModel by viewModels()
 
-    private var _binding: FragmentAddMemberBinding?=null
+    private var _binding: FragmentAddMemberBinding? = null
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentAddMemberBinding.inflate(
+        _binding = FragmentAddMemberBinding.inflate(
             inflater,
             container,
             false
@@ -70,8 +67,8 @@ class AddMemberFragment : Fragment() {
     }
 
     private fun setupUpdateScreen() {
-        val memberId=arguments?.getInt("memberId")?:-1
-        if(memberId!=-1){
+        val memberId = arguments?.getInt("memberId") ?: -1
+        if (memberId != -1) {
             viewModel.loadMember(memberId)
         }
     }
@@ -97,12 +94,12 @@ class AddMemberFragment : Fragment() {
                     binding.loadingOverlay.isVisible = state.isLoading
                     binding.btnSaveMember.isEnabled = !state.isLoading
 
-                    if(state.isEditMode){
-                        binding.tvTitle.text="Update Member"
-                        binding.btnSaveMember.text="Update Member"
-                    }else{
-                        binding.tvTitle.text="Save Member"
-                        binding.btnSaveMember.text="Save Member"
+                    if (state.isEditMode) {
+                        binding.tvTitle.text = getString(R.string.update_member)
+                        binding.btnSaveMember.text = getString(R.string.update_member)
+                    } else {
+                        binding.tvTitle.text = getString(R.string.save_member)
+                        binding.btnSaveMember.text = getString(R.string.save_member)
                     }
 
                     state.errorMessage?.let { message ->
@@ -115,9 +112,9 @@ class AddMemberFragment : Fragment() {
 
                     }
                     if (state.isMemberAdded) {
-                        val message=if(state.isEditMode){
+                        val message = if (state.isEditMode) {
                             "Member Updated Successfully"
-                        }else{
+                        } else {
                             "Member added successfully"
                         }
 

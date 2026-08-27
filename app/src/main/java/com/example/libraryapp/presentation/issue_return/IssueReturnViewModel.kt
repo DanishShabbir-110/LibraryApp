@@ -37,16 +37,16 @@ class IssueReturnViewModel @Inject constructor(
         viewModelScope.launch {
 
             combine(
-                getBooksUseCase(),
-                getMembersUseCase()
+                getBooksUseCase(), getMembersUseCase()
             ) { books, members ->
                 books to members
             }.collectLatest { (books, members) ->
 
                 _uiState.update {
                     it.copy(
-                        books = books.filter { it.availableCopies>0 },
-                        members = members
+                        books = books.filter { filter ->
+                            filter.availableCopies > 0
+                        }, members = members
                     )
                 }
             }
@@ -56,8 +56,7 @@ class IssueReturnViewModel @Inject constructor(
     fun selectMember(member: Member) {
         _uiState.update {
             it.copy(
-                selectedMember = member,
-                errorMessage = null
+                selectedMember = member, errorMessage = null
             )
         }
     }
@@ -65,8 +64,7 @@ class IssueReturnViewModel @Inject constructor(
     fun selectBook(book: Book) {
         _uiState.update {
             it.copy(
-                selectedBook = book,
-                errorMessage = null
+                selectedBook = book, errorMessage = null
             )
         }
     }
@@ -111,15 +109,12 @@ class IssueReturnViewModel @Inject constructor(
             try {
                 _uiState.update {
                     it.copy(
-                        isLoading = true,
-                        errorMessage = null
+                        isLoading = true, errorMessage = null
                     )
                 }
 
                 issueBookUseCase(
-                    book,
-                    member,
-                    issueDate
+                    book, member, issueDate
                 )
 
                 _uiState.update {
@@ -132,8 +127,7 @@ class IssueReturnViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to issue a book."
+                        isLoading = false, errorMessage = e.message ?: "Failed to issue a book."
                     )
                 }
             }
@@ -164,15 +158,12 @@ class IssueReturnViewModel @Inject constructor(
             try {
                 _uiState.update {
                     it.copy(
-                        isLoading = true,
-                        errorMessage = null
+                        isLoading = true, errorMessage = null
                     )
                 }
 
                 returnBookUseCase(
-                    bookId = book.id,
-                    memberId = member.id,
-                    returnDate = returnDate
+                    bookId = book.id, memberId = member.id, returnDate = returnDate
                 )
 
                 _uiState.update {
@@ -185,8 +176,7 @@ class IssueReturnViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to Return a book."
+                        isLoading = false, errorMessage = e.message ?: "Failed to Return a book."
                     )
                 }
             }
@@ -215,13 +205,23 @@ class IssueReturnViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                isSuccess = false,
-                successMessage = null
+                isSuccess = false, successMessage = null
             )
         }
     }
 
     fun clearForm() {
-        _uiState.value = IssueReturnUiState()
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedBook = null,
+                selectedMember = null,
+                issueDate = null,
+                returnDate = null,
+                isLoading = false,
+                isSuccess = false,
+                successMessage = null,
+                errorMessage = null
+            )
+        }
     }
 }

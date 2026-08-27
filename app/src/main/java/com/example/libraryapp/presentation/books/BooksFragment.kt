@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
 import com.example.libraryapp.domain.model.Book
-import com.example.libraryapp.presentation.AppMenuFragment
-import com.example.libraryapp.presentation.books.addbooks.AddBookFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,7 +49,6 @@ class BooksFragment : Fragment() {
 
         setupRecyclerView()
         setupClickListeners()
-        setupBackArrow()
         observeUiState()
         setupSearch()
 
@@ -62,9 +59,11 @@ class BooksFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     bookAdapter.submitList(state.books)
-                    binding.loadingOverlay.isVisible = state.isLoading
-                    binding.tvNoData.isVisible = state.books.isEmpty() && !state.isLoading
-                    binding.rvBooks.isVisible = state.books.isNotEmpty()
+                    binding.apply {
+                        loadingOverlay.isVisible = state.isLoading
+                        tvNoData.isVisible = state.books.isEmpty() && !state.isLoading
+                        rvBooks.isVisible = state.books.isNotEmpty()
+                    }
                     state.errorMessage?.let { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                         viewModel.clearError()
@@ -83,7 +82,7 @@ class BooksFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putInt("bookId", book.id)
                 }
-                findNavController().navigate(R.id.addBookFragment,bundle)
+                findNavController().navigate(R.id.addBookFragment, bundle)
             }
         )
 
@@ -96,24 +95,18 @@ class BooksFragment : Fragment() {
 
     private fun showDeleteDialog(book: Book) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Book")
-            .setMessage("Are you sure want to delete this book.")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle(getString(R.string.delete_book))
+            .setMessage(getString(R.string.are_you_sure_want_to_delete_this_book))
+            .setNegativeButton(getString(R.string.cancel), null)
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deleteBook(book)
             }.show()
     }
 
     fun setupClickListeners() {
-
         binding.fabAddBook.setOnClickListener {
             findNavController().navigate(R.id.addBookFragment)
         }
-
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
     }
 
     override fun onDestroyView() {
@@ -131,11 +124,4 @@ class BooksFragment : Fragment() {
         }
     }
 
-    private fun setupBackArrow() {
-
-        val showBackArrow =
-            arguments?.getBoolean("showBackArrow", false) ?: false
-
-        binding.ivBack.isVisible = showBackArrow
-    }
 }

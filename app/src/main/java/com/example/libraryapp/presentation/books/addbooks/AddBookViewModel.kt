@@ -80,17 +80,17 @@ class AddBookViewModel @Inject constructor(
                     )
                     updateBookUseCase(updateBook)
                 }else{
-                    val selectedCateory= BookCategory.entries.find {
+                    val selectedCategory= BookCategory.entries.find {
                         it.name.equals(state.category,ignoreCase = true)
                     }
-                    if(selectedCateory==null){
+                    if(selectedCategory==null){
                         showError("Please select a valid category")
                         return@launch
                     }
                     val book = Book(
                         name = state.name.trim(),
                         author = state.author.trim(),
-                        category = selectedCateory,
+                        category = selectedCategory,
                         totalCopies = copies,
                         availableCopies = copies
                     )

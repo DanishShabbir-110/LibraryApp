@@ -1,6 +1,5 @@
 package com.example.libraryapp.presentation.books
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,8 +7,8 @@ import com.example.libraryapp.databinding.ItemBookBinding
 import com.example.libraryapp.domain.model.Book
 
 class BooksAdapter(
-    private val onDeleteClick:(Book)->Unit,
-    private val onUpdateClick:(Book)->Unit
+    private val onDeleteClick: (Book) -> Unit,
+    private val onUpdateClick: (Book) -> Unit
 ) : RecyclerView.Adapter<BooksAdapter.VH>() {
     private var books = mutableListOf<Book>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -23,7 +22,11 @@ class BooksAdapter(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.binding(books[position], onDeleteClick = onDeleteClick,onUpdateClick=onUpdateClick)
+        holder.binding(
+            books[position],
+            onDeleteClick = onDeleteClick,
+            onUpdateClick = onUpdateClick
+        )
     }
 
     override fun getItemCount(): Int = books.size
@@ -35,12 +38,12 @@ class BooksAdapter(
     }
 
     class VH(val bind: ItemBookBinding) : RecyclerView.ViewHolder(bind.root) {
-        fun binding(book: Book,onDeleteClick: (Book) -> Unit,onUpdateClick: (Book) -> Unit) {
-            with(bind) {
+        fun binding(book: Book, onDeleteClick: (Book) -> Unit, onUpdateClick: (Book) -> Unit) {
+           bind.apply {
                 tvBookTitle.text = book.name
-                tvBookAuthor.text = "Author: ${book.author}"
-                tvBookCategory.text = "Category: ${book.category.displayName}"
-                tvBookAvailability.text = "Avialable: ${book.availableCopies} / ${book.totalCopies}"
+                tvBookAuthor.text = book.author.let { "Author: ${book.author}" }
+                tvBookCategory.text = book.category.let { "Category: ${book.category.displayName}" }
+                tvBookAvailability.text = book.availableCopies.let { "Available: ${book.availableCopies} / ${book.totalCopies}" }
                 ivDeleteBook.setOnClickListener {
                     onDeleteClick(book)
                 }

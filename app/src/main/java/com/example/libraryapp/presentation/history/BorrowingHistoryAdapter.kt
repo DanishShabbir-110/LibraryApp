@@ -1,8 +1,8 @@
 package com.example.libraryapp.presentation.history
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libraryapp.databinding.ItemBorrowingHistoryBinding
 import com.example.libraryapp.domain.model.BorrowingStatus
@@ -14,11 +14,7 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
     private var borrowingHistory = mutableListOf<BorrowingHistoryItem>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(
-            ItemBorrowingHistoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+            ItemBorrowingHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -30,24 +26,23 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
 
     class VH(val bind: ItemBorrowingHistoryBinding) : RecyclerView.ViewHolder(bind.root) {
         fun binding(borrowBook: BorrowingHistoryItem) {
-            with(bind) {
+            bind.apply {
                 tvMemberName.text = borrowBook.memberName
                 tvBookTitle.text = borrowBook.bookName
-                tvIssueDate.text = "Issued: ${formatDate(borrowBook.issueDate)}"
-                tvReturnDate.text =
-                    borrowBook.returnDate?.let {
+                tvIssueDate.text = borrowBook.issueDate.let { "Issued: ${formatDate(it)}" }
+                tvReturnDate.text = borrowBook.returnDate?.let {
 
-                        "Returned: ${formatDate(it)}"
+                    "Returned: ${formatDate(it)}"
 
-                    } ?: "Not Returned"
+                } ?: "Not Returned"
                 if (borrowBook.status == BorrowingStatus.ISSUED) {
                     tvStatus.text = borrowBook.status.toString()
-                    tvStatus.setBackgroundColor(Color.parseColor("#FFF7E9"))
-                    tvStatus.setTextColor(Color.parseColor("#FF9800"))
+                    tvStatus.setBackgroundColor("#FFF7E9".toColorInt())
+                    tvStatus.setTextColor("#FF9800".toColorInt())
                 } else {
                     tvStatus.text = borrowBook.status.toString()
-                    tvStatus.setBackgroundColor(Color.parseColor("#EAF9F4"))
-                    tvStatus.setTextColor(Color.parseColor("#4CAF50"))
+                    tvStatus.setBackgroundColor("#EAF9F4".toColorInt())
+                    tvStatus.setTextColor("#4CAF50".toColorInt())
                 }
             }
         }
@@ -56,11 +51,9 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
             time: Long
         ): String {
 
-            val formatter =
-                SimpleDateFormat(
-                    "dd MMM yyyy",
-                    Locale.getDefault()
-                )
+            val formatter = SimpleDateFormat(
+                "dd MMM yyyy", Locale.getDefault()
+            )
 
             return formatter.format(
                 Date(time)
@@ -68,11 +61,9 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
         }
     }
 
-    fun submitList(newList:List<BorrowingHistoryItem>){
+    fun submitList(newList: List<BorrowingHistoryItem>) {
         borrowingHistory.clear()
         borrowingHistory.addAll(newList)
         notifyDataSetChanged()
     }
-
-
 }

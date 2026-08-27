@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.issue_return
 
+//noinspection SuspiciousImport
 import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -16,8 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentIssueReturnBookBinding
-import com.example.libraryapp.presentation.AppMenuFragment
-import com.example.libraryapp.presentation.history.BorrowingHistoryFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -30,9 +29,7 @@ class IssueReturnBookFragment : Fragment() {
     private val viewModel: IssueReturnViewModel by viewModels()
     private var _binding: FragmentIssueReturnBookBinding? = null
     private val binding get() = _binding!!
-    private val dateFormat = SimpleDateFormat(
-        "dd MMM yyyy", Locale.getDefault()
-    )
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -57,13 +54,10 @@ class IssueReturnBookFragment : Fragment() {
             ) {
                 viewModel.uiState.collect { state ->
                     binding.loadingOverlay.isVisible = state.isLoading
-
                     binding.btnIssueBook.isEnabled = !state.isLoading
                     binding.btnReturnBook.isEnabled = !state.isLoading
 
-                    val memberNames = state.members.map {
-                        it.name
-                    }
+                    val memberNames = state.members.map { it.name }
 
                     val memberAdapter = ArrayAdapter(
                         requireContext(), R.layout.simple_dropdown_item_1line, memberNames
@@ -93,43 +87,35 @@ class IssueReturnBookFragment : Fragment() {
                         viewModel.selectBook(selectedBook)
                     }
 
-                    state.selectedBook?.let { book ->
-
-                        if (binding.actBook.text.toString() != book.name) {
-                            binding.actBook.setText(
-                                book.name, false
-                            )
-                        }
+                    val selectedBookName = state.selectedBook?.name.orEmpty()
+                    if (binding.actBook.text.toString() != selectedBookName) {
+                        binding.actBook.setText(selectedBookName, false)
                     }
 
-                    state.selectedMember?.let { member ->
-
-                        if (binding.actMember.text.toString() != member.name) {
-                            binding.actMember.setText(
-                                member.name, false
-                            )
-                        }
+                    val selectedMemberName = state.selectedMember?.name.orEmpty()
+                    if (binding.actMember.text.toString() != selectedMemberName) {
+                        binding.actMember.setText(selectedMemberName, false)
                     }
 
-                    state.issueDate?.let { date ->
+                    val issueDateText = state.issueDate?.let {
+                        formatDate(it)
+                    }.orEmpty()
 
-                        binding.etIssueDate.setText(
-                            formatDate(date)
-                        )
+                    if (binding.etIssueDate.text.toString() != issueDateText) {
+                        binding.etIssueDate.setText(issueDateText)
                     }
 
-                    state.returnDate?.let { date ->
+                    val returnDateText = state.returnDate?.let {
+                        formatDate(it)
+                    }.orEmpty()
 
-                        binding.etReturnDate.setText(
-                            formatDate(date)
-                        )
+                    if (binding.etReturnDate.text.toString() != returnDateText) {
+                        binding.etReturnDate.setText(returnDateText)
                     }
 
                     state.errorMessage?.let { message ->
 
-                        Toast.makeText(
-                            requireContext(), message, Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
                         viewModel.clearError()
                     }
@@ -139,8 +125,12 @@ class IssueReturnBookFragment : Fragment() {
                         Toast.makeText(
                             requireContext(), state.successMessage, Toast.LENGTH_SHORT
                         ).show()
-                        val bundle = Bundle().apply { putBoolean("showBackArrow",true) }
-                       findNavController().navigate(com.example.libraryapp.R.id.nav_history,bundle)
+                        viewModel.clearForm()
+                        val bundle = Bundle().apply { putBoolean("showBackArrow", true) }
+                        findNavController().navigate(
+                            com.example.libraryapp.R.id.nav_history,
+                            bundle
+                        )
                         viewModel.clearForm()
                         viewModel.clearSuccess()
                     }

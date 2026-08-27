@@ -15,32 +15,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:contentDescription="Back"
-        android:src="@drawable/iv_back"
-        app:tint="@color/text_on_primary"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:text="Books"
         android:textColor="@color/text_on_primary"
+        android:textAlignment="center"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/ivBack"
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
         app:layout_constraintEnd_toEndOf="@id/topBarBackground"
-        app:layout_constraintStart_toEndOf="@id/ivBack"
-        app:layout_constraintTop_toTopOf="@id/ivBack" />
+        app:layout_constraintStart_toStartOf="@id/topBarBackground"
+        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardSearch"

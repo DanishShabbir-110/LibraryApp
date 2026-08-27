@@ -26,7 +26,7 @@ class AddMemberViewModel @Inject constructor(
     val uiState: StateFlow<AddMemberUiState> = _uiState.asStateFlow()
 
     fun saveMember() {
-        val state=_uiState.value
+        val state = _uiState.value
         if (state.name.isBlank()) {
             _uiState.update {
                 it.copy(errorMessage = "Name is required.")
@@ -53,17 +53,20 @@ class AddMemberViewModel @Inject constructor(
                 )
             }
             try {
-                if(state.isEditMode){
-                    val oldMember=getMemberByIdUseCase(state.id)?:throw IllegalStateException("Member not found")
+                if (state.isEditMode) {
+                    val oldMember = getMemberByIdUseCase(state.id)
+                    if (oldMember == null) {
+                        showError("Not Member found.")
+                    }
 
-                    val updateMember= Member(
+                    val updateMember = Member(
                         id = state.id,
                         name = state.name,
-                        email=state.email,
+                        email = state.email,
                         phone = state.phoneNumber
                     )
                     updateMemberUseCase(updateMember)
-                }else {
+                } else {
                     val member = Member(
                         name = state.name.trim(),
                         email = state.email.trim(),
@@ -97,7 +100,7 @@ class AddMemberViewModel @Inject constructor(
                 }
                 val member = getMemberByIdUseCase(id)
                 if (member == null) {
-                    showError("No member found.")
+                    showError("Member not found.")
                     return@launch
                 }
                 _uiState.update {
@@ -117,6 +120,7 @@ class AddMemberViewModel @Inject constructor(
             }
         }
     }
+
     fun updateName(name: String) {
         _uiState.update {
             it.copy(name = name)
@@ -134,6 +138,7 @@ class AddMemberViewModel @Inject constructor(
             it.copy(phoneNumber = phoneNumber)
         }
     }
+
     fun clearError() {
         _uiState.update {
             it.copy(errorMessage = null)

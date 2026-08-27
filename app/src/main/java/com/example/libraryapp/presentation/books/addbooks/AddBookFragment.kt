@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.books.addbooks
 
+//noinspection SuspiciousImport
 import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -83,7 +84,7 @@ class AddBookFragment : Fragment() {
 
     private fun setupDropDown() {
         val categoryList = BookCategory.entries.map {
-            it.name.lowercase().replaceFirstChar { char-> char.uppercase() }
+            it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
         }
         val adapter =
             ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, categoryList)
@@ -108,19 +109,22 @@ class AddBookFragment : Fragment() {
                         binding.actCategory.setText(state.category)
                     }
 
-                    if (binding.etTotalCopies.text.toString() != state.totalCopies.toString()) {
+                    if (binding.etTotalCopies.text.toString() != state.totalCopies) {
                         binding.etTotalCopies.setText(state.totalCopies)
                     }
 
                     binding.loadingOverlay.isVisible = state.isLoading
                     binding.btnSaveBook.isEnabled = !state.isLoading
 
-                    if(state.isEditMode){
-                        binding.tvTitle.text="Update Book"
-                        binding.btnSaveBook.text="Update Book"
-                    }else{
-                        binding.btnSaveBook.text="Add Book"
-                        binding.tvTitle.text="Add Book"
+                    if (state.isEditMode) {
+                        binding.tvTitle.text =
+                            getString(com.example.libraryapp.R.string.update_book)
+                        binding.btnSaveBook.text =
+                            getString(com.example.libraryapp.R.string.update_book)
+                    } else {
+                        binding.btnSaveBook.text =
+                            getString(com.example.libraryapp.R.string.add_book)
+                        binding.tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
                     }
 
                     state.errorMessage?.let { message ->
@@ -133,9 +137,9 @@ class AddBookFragment : Fragment() {
 
                     }
                     if (state.isBookAdded) {
-                        val message=if(state.isEditMode){
+                        val message = if (state.isEditMode) {
                             "Book Updated Successfully"
-                        }else{
+                        } else {
                             "Book added successfully"
                         }
                         Toast.makeText(

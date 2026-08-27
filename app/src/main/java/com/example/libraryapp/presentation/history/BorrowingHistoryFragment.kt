@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
 import com.example.libraryapp.domain.model.BorrowingStatus
-import com.example.libraryapp.presentation.AppMenuFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -53,6 +52,7 @@ class BorrowingHistoryFragment : Fragment() {
             findNavController().popBackStack()
         }
     }
+
     private fun setupBackArrow() {
 
         val showBackArrow =
@@ -60,6 +60,7 @@ class BorrowingHistoryFragment : Fragment() {
 
         binding.ivBack.isVisible = showBackArrow
     }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(
@@ -67,8 +68,8 @@ class BorrowingHistoryFragment : Fragment() {
             ) {
                 viewModel.uiState.collect { state ->
                     borrowingHistoryAdapter.submitList(state.borrowList)
-                    binding.tvNoData.isVisible=state.borrowList.isEmpty()&&!state.isLoading
-                    binding.rvBorrowingHistory.isVisible=state.borrowList.isNotEmpty()
+                    binding.tvNoData.isVisible = state.borrowList.isEmpty() && !state.isLoading
+                    binding.rvBorrowingHistory.isVisible = state.borrowList.isNotEmpty()
                     state.errorMessage?.let { message ->
                         Toast.makeText(
                             requireContext(),
@@ -116,37 +117,20 @@ class BorrowingHistoryFragment : Fragment() {
         )
 
         binding.actStatus.apply {
-
             setAdapter(adapter)
-
-            // Default text
-            setText("All", false)
-
-            // User keyboard se type na kar sake
+            setText(context.getString(R.string.all), false)
             keyListener = null
-
             setOnClickListener {
                 showDropDown()
             }
-
             setOnItemClickListener { _, _, position, _ ->
-
                 val selectedStatus = statusList[position]
-
                 setText(selectedStatus, false)
-
                 val filter = when (selectedStatus) {
-
-                    "Issued" ->
-                        BorrowingStatus.ISSUED
-
-                    "Returned" ->
-                        BorrowingStatus.RETURNED
-
-                    else ->
-                        BorrowingStatus.ALL
+                    "Issued" -> BorrowingStatus.ISSUED
+                    "Returned" -> BorrowingStatus.RETURNED
+                    else -> BorrowingStatus.ALL
                 }
-
                 viewModel.filterByStatus(filter)
             }
         }
