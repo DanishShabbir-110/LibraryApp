@@ -11,4 +11,6 @@
     <string name="all">All</string>
     <string name="update_member">Update Member</string>
     <string name="save_member">Save Member</string>
+    <string name="issue_book">Issue Book</string>
+    <string name="return_book">Return Book</string>
 </resources>

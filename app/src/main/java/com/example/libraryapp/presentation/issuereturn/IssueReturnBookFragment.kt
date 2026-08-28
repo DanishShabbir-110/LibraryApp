@@ -1,7 +1,5 @@
 package com.example.libraryapp.presentation.issuereturn
 
-//noinspection SuspiciousImport
-import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +14,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
+import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentIssueReturnBookBinding
+import com.example.libraryapp.presentation.main.MainActivity
+import com.example.libraryapp.utils.hide
+import com.example.libraryapp.utils.show
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,25 +29,44 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class IssueReturnBookFragment : Fragment() {
+
     private val viewModel: IssueReturnViewModel by viewModels()
     private var _binding: FragmentIssueReturnBookBinding? = null
     private val binding get() = _binding!!
+
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentIssueReturnBookBinding.inflate(
-            inflater, container, false
-        )
+        _binding = FragmentIssueReturnBookBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToggleButton()
         setupClickListeners()
         observeUiState()
+    }
+
+    private fun setupToggleButton() {
+        binding.toggleAction.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) {
+                return@addOnButtonCheckedListener
+            }
+
+            when (checkedId) {
+                R.id.btnIssueMode -> viewModel.selectMode(BookActionMode.ISSUE)
+                R.id.btnReturnMode -> viewModel.selectMode(BookActionMode.RETURN)
+            }
+        }
     }
 
     private fun observeUiState() {
@@ -53,37 +74,60 @@ class IssueReturnBookFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(
                 Lifecycle.State.STARTED
             ) {
-                viewModel.uiState.collect { state ->
+                viewModel.uiState.collectLatest { state ->
                     binding.apply {
                         loadingOverlay.isVisible = state.isLoading
-                        btnIssueBook.isEnabled = !state.isLoading
-                        btnReturnBook.isEnabled = !state.isLoading
+                        btnSubmit.isEnabled = !state.isLoading
+
+                        when (state.mode) {
+                            BookActionMode.ISSUE -> {
+                                if (toggleAction.checkedButtonId != R.id.btnIssueMode) {
+                                    toggleAction.check(R.id.btnIssueMode)
+                                }
+
+                                tvTitle.text = getString(R.string.issue_book)
+
+                                btnSubmit.text = getString(R.string.issue_book)
+
+                                tvIssueDateLabel.show()
+                                tilIssueDate.show()
+
+                                tvReturnDateLabel.hide()
+                                tilReturnDate.hide()
+                            }
+
+                            BookActionMode.RETURN -> {
+                                if (toggleAction.checkedButtonId != R.id.btnReturnMode) {
+                                    toggleAction.check(R.id.btnReturnMode)
+                                }
+
+                                tvTitle.text = getString(R.string.return_book)
+
+                                btnSubmit.text = getString(R.string.return_book)
+
+                                tvReturnDateLabel.show()
+                                tilReturnDate.show()
+
+                                tvIssueDateLabel.hide()
+                                tilIssueDate.hide()
+                            }
+                        }
                     }
 
                     val memberNames = state.members.map { it.name }
 
-                    val memberAdapter = ArrayAdapter(
-                        requireContext(),
-                        R.layout.simple_dropdown_item_1line,
-                        memberNames
-                    )
-
-                    binding.actMember.setAdapter(memberAdapter)
-
-                    binding.actMember.setOnItemClickListener { _, _, position, _ ->
-
-                        val selectedMember = state.members[position]
-
-                        viewModel.selectMember(selectedMember)
+                    val memberAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, memberNames)
+                    binding.apply {
+                        actMember.setAdapter(memberAdapter)
+                        actMember.setOnItemClickListener { _, _, position, _ ->
+                            val selectedMember = state.members[position]
+                            viewModel.selectMember(selectedMember)
+                        }
                     }
 
-                    val bookNames = state.books.map {
-                        it.name
-                    }
+                    val bookNames = state.books.map { it.name }
 
-                    val bookAdapter = ArrayAdapter(
-                        requireContext(), R.layout.simple_dropdown_item_1line, bookNames
-                    )
+                    val bookAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, bookNames)
 
                     binding.actBook.setAdapter(bookAdapter)
 
@@ -92,54 +136,37 @@ class IssueReturnBookFragment : Fragment() {
                         viewModel.selectBook(selectedBook)
                     }
 
-                    val selectedBookName = state.selectedBook?.name.orEmpty()
-                    if (binding.actBook.text.toString() != selectedBookName) {
-                        binding.actBook.setText(selectedBookName, false)
-                    }
-
                     val selectedMemberName = state.selectedMember?.name.orEmpty()
                     if (binding.actMember.text.toString() != selectedMemberName) {
                         binding.actMember.setText(selectedMemberName, false)
                     }
 
-                    val issueDateText = state.issueDate?.let {
-                        formatDate(it)
-                    }.orEmpty()
+                    val selectedBookName = state.selectedBook?.name.orEmpty()
+                    if (binding.actBook.text.toString() != selectedBookName) {
+                        binding.actBook.setText(selectedBookName, false)
+                    }
 
+                    val issueDateText = state.issueDate?.let { formatDate(it) }.orEmpty()
                     if (binding.etIssueDate.text.toString() != issueDateText) {
                         binding.etIssueDate.setText(issueDateText)
                     }
 
-                    val returnDateText = state.returnDate?.let {
-                        formatDate(it)
-                    }.orEmpty()
-
+                    val returnDateText = state.returnDate?.let { formatDate(it) }.orEmpty()
                     if (binding.etReturnDate.text.toString() != returnDateText) {
                         binding.etReturnDate.setText(returnDateText)
                     }
 
                     state.errorMessage?.let { message ->
-
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
                         viewModel.clearError()
                     }
 
                     if (state.isSuccess) {
+                        Toast.makeText(requireContext(), state.successMessage, Toast.LENGTH_SHORT).show()
+                        viewModel.clearForm()
 
-                        Toast.makeText(
-                            requireContext(), state.successMessage, Toast.LENGTH_SHORT
-                        ).show()
-                        viewModel.clearForm()
-                        findNavController().popBackStack()
-                        findNavController().navigate(com.example.libraryapp.R.id.nav_history
-                            navOptions {
-                                popUpTo(com.example.libraryapp.R.id.nav_home)
-                                launchSingleTop=true
-                            }
-                        )
-                        viewModel.clearForm()
-                        viewModel.clearSuccess()
+                        findNavController().popBackStack(R.id.nav_home, false)
+                        (requireActivity() as MainActivity).selectBottomTab(R.id.nav_history)
                     }
                 }
             }
@@ -147,6 +174,7 @@ class IssueReturnBookFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+
         binding.ivBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -159,34 +187,27 @@ class IssueReturnBookFragment : Fragment() {
             showDatePicker(DateType.RETURNDATE)
         }
 
-        binding.btnIssueBook.setOnClickListener {
-            viewModel.issueBook()
+        binding.btnSubmit.setOnClickListener {
+            when (viewModel.uiState.value.mode) {
+                BookActionMode.ISSUE -> viewModel.issueBook()
+                BookActionMode.RETURN -> viewModel.returnBook()
+            }
         }
-
-        binding.btnReturnBook.setOnClickListener {
-            viewModel.returnBook()
-        }
-
     }
 
     private fun showDatePicker(dateType: DateType) {
         val calendar = Calendar.getInstance()
 
-        DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
+        DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                when (dateType) {
+                    DateType.ISSUEDATE -> {
+                        viewModel.selectIssueDate(calendar.timeInMillis)
+                    }
 
-                calendar.set(
-                    year, month, dayOfMonth
-                )
-                if (dateType == DateType.ISSUEDATE) {
-                    viewModel.selectIssueDate(
-                        calendar.timeInMillis
-                    )
-                } else {
-                    viewModel.selectReturnDate(
-                        calendar.timeInMillis
-                    )
+                    DateType.RETURNDATE -> {
+                        viewModel.selectReturnDate(calendar.timeInMillis)
+                    }
                 }
             },
             calendar.get(Calendar.YEAR),
@@ -195,15 +216,9 @@ class IssueReturnBookFragment : Fragment() {
         ).show()
     }
 
-    private fun formatDate(
-        time: Long
-    ): String {
-
-        return dateFormat.format(
-            Date(time)
-        )
+    private fun formatDate(time: Long): String {
+        return dateFormat.format(Date(time))
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

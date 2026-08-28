@@ -120,9 +120,6 @@ class BorrowingHistoryFragment : Fragment() {
             setAdapter(adapter)
             setText(context.getString(R.string.all), false)
             keyListener = null
-            setOnClickListener {
-                showDropDown()
-            }
             setOnItemClickListener { _, _, position, _ ->
                 val selectedStatus = statusList[position]
                 setText(selectedStatus, false)

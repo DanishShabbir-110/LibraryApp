@@ -14,10 +14,6 @@
         android:layout_height="wrap_content"
         android:paddingBottom="24dp">
 
-        <!-- =========================
-             TOP BAR
-             ========================= -->
-
         <View
             android:id="@+id/topBarBackground"
             android:layout_width="0dp"
@@ -44,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
-            android:text="Issue / Return Book"
+            android:text="@string/issue_book"
             android:textColor="@color/text_on_primary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -53,16 +49,46 @@
             app:layout_constraintStart_toEndOf="@id/ivBack"
             app:layout_constraintTop_toTopOf="@id/ivBack" />
 
-        <!-- =========================
-             MEMBER
-             ========================= -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleAction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            app:checkedButton="@id/btnIssueMode"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topBarBackground">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIssueMode"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Issue Book"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReturnMode"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Return Book"
+                android:textStyle="bold" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:id="@+id/tvSelectMember"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="16dp"
             android:text="Select Member"
             android:textColor="@color/text_primary"
@@ -70,7 +96,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBarBackground" />
+            app:layout_constraintTop_toBottomOf="@id/toggleAction" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMember"
@@ -100,11 +126,6 @@
                 android:textSize="15sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-
-        <!-- =========================
-             BOOK
-             ========================= -->
 
         <TextView
             android:id="@+id/tvSelectBook"
@@ -149,11 +170,6 @@
                 android:textSize="15sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-
-        <!-- =========================
-             ISSUE DATE
-             ========================= -->
 
         <TextView
             android:id="@+id/tvIssueDateLabel"
@@ -202,11 +218,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <!-- =========================
-             RETURN DATE
-             ========================= -->
-
         <TextView
             android:id="@+id/tvReturnDateLabel"
             android:layout_width="0dp"
@@ -218,6 +229,7 @@
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilIssueDate" />
@@ -231,6 +243,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:hint="Select return date"
+            android:visibility="gone"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
@@ -254,17 +267,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <!-- =========================
-             ISSUE BUTTON
-             ========================= -->
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnIssueBook"
+            android:id="@+id/btnSubmit"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="ISSUE BOOK"
             android:textColor="@color/text_on_primary"
@@ -275,30 +283,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilReturnDate" />
-
-
-        <!-- =========================
-             RETURN BUTTON
-             ========================= -->
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnReturnBook"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
-            android:text="RETURN BOOK"
-            android:textColor="@color/primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/surface"
-            app:cornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnIssueBook"
-            app:strokeColor="@color/primary"
-            app:strokeWidth="1dp" />
 
         <FrameLayout
             android:id="@+id/loadingOverlay"
@@ -323,14 +307,17 @@
                     android:indeterminateTint="@color/white" />
 
                 <TextView
+                    android:id="@+id/tvLoading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Adding Book...\nPlease Wait"
+                    android:text="Processing...\nPlease Wait"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
+
             </LinearLayout>
+
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
