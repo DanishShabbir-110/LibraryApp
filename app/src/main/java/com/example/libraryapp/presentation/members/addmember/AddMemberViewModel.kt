@@ -3,9 +3,7 @@ package com.example.libraryapp.presentation.members.addmember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Member
-import com.example.libraryapp.domain.usecases.members.AddMemberUseCase
-import com.example.libraryapp.domain.usecases.members.GetMemberByIdUseCase
-import com.example.libraryapp.domain.usecases.members.UpdateMemberUseCase
+import com.example.libraryapp.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,14 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddMemberViewModel @Inject constructor(
-    private val addMemberUseCase: AddMemberUseCase,
-    private val getMemberByIdUseCase: GetMemberByIdUseCase,
-    private val updateMemberUseCase: UpdateMemberUseCase
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(
-        AddMemberUiState()
-    )
+class AddMemberViewModel @Inject constructor(private val repository: MemberRepository) : ViewModel() {
+    private val _uiState = MutableStateFlow(AddMemberUiState())
     val uiState: StateFlow<AddMemberUiState> = _uiState.asStateFlow()
 
     fun saveMember() {
@@ -54,7 +46,7 @@ class AddMemberViewModel @Inject constructor(
             }
             try {
                 if (state.isEditMode) {
-                    val oldMember = getMemberByIdUseCase(state.id)
+                    val oldMember = repository.getMemberById(state.id)
                     if (oldMember == null) {
                         showError("Not Member found.")
                     }
@@ -65,21 +57,17 @@ class AddMemberViewModel @Inject constructor(
                         email = state.email,
                         phone = state.phoneNumber
                     )
-                    updateMemberUseCase(updateMember)
+                    repository.updateMember(updateMember)
                 } else {
                     val member = Member(
                         name = state.name.trim(),
                         email = state.email.trim(),
                         phone = state.phoneNumber.trim()
                     )
-
-                    addMemberUseCase(member)
+                    repository.addMember(member)
                 }
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        isMemberAdded = true
-                    )
+                    it.copy(isLoading = false, isMemberAdded = true)
                 }
             } catch (e: Exception) {
                 _uiState.update {
@@ -98,7 +86,7 @@ class AddMemberViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(isLoading = true)
                 }
-                val member = getMemberByIdUseCase(id)
+                val member = repository.getMemberById(id)
                 if (member == null) {
                     showError("Member not found.")
                     return@launch
@@ -161,3 +149,14 @@ class AddMemberViewModel @Inject constructor(
         }
     }
 }
+
+data class AddMemberUiState(
+    val id: Int = 0,
+    val name: String = "",
+    val email: String = "",
+    val phoneNumber: String = "",
+    val isEditMode: Boolean = false,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val isMemberAdded: Boolean = false
+)

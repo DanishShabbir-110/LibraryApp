@@ -1,8 +1,8 @@
 package com.example.libraryapp.data.repository
 
-import com.example.libraryapp.data.local.daos.BorrowBookDao
-import com.example.libraryapp.data.mapper.toDomain
-import com.example.libraryapp.data.mapper.toEntity
+import com.example.libraryapp.data.local.dao.BorrowBookDao
+import com.example.libraryapp.data.local.entity.toDomain
+import com.example.libraryapp.data.local.entity.toEntity
 import com.example.libraryapp.domain.model.BorrowBook
 import com.example.libraryapp.domain.model.BorrowingStatus
 import com.example.libraryapp.domain.repository.BorrowBookRepository
@@ -45,15 +45,15 @@ class BorrowBookRepositoryImpl @Inject constructor(
         bookId: Int,
         memberId: Int
     ): BorrowBook? {
-        return borrowBookDao.getActiveBorrowBook(bookId,memberId)?.toDomain()
+        return borrowBookDao.getActiveBorrowBook(bookId, memberId)?.toDomain()
     }
 
     override suspend fun updateBorrowBookName(bookName: String, bookId: Int) {
-        borrowBookDao.updateBorrowBookName(bookName,bookId)
+        borrowBookDao.updateBorrowBookName(bookName, bookId)
     }
 
     override suspend fun updateBorrowMemberName(memberName: String, memberId: Int) {
-        borrowBookDao.updateBorrowMemberName(memberName,memberId)
+        borrowBookDao.updateBorrowMemberName(memberName, memberId)
     }
 
 }

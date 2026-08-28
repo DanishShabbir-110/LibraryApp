@@ -2,23 +2,24 @@ package com.example.libraryapp.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.libraryapp.domain.cases.borrowbooks.GetBorrowBooksUseCase
 import com.example.libraryapp.domain.model.BorrowingStatus
-import com.example.libraryapp.domain.usecases.books.GetBooksUseCase
-import com.example.libraryapp.domain.usecases.members.GetMembersUseCase
+import com.example.libraryapp.domain.repository.BookRepository
+import com.example.libraryapp.domain.repository.BorrowBookRepository
+import com.example.libraryapp.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val getBooksUseCase: GetBooksUseCase,
-    private val getMembersUseCase: GetMembersUseCase,
-    private val getBorrowBooksUseCase: GetBorrowBooksUseCase
+    private val bookRepository: BookRepository,
+    private val memberRepository: MemberRepository,
+    private val borrowBookRepository: BorrowBookRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
@@ -30,9 +31,9 @@ class DashboardViewModel @Inject constructor(
     private fun loadDashboardData() {
         viewModelScope.launch {
             combine(
-                getBooksUseCase(),
-                getMembersUseCase(),
-                getBorrowBooksUseCase()
+                bookRepository.getAllBooks(),
+                memberRepository.getAllMembers(),
+                borrowBookRepository.getAllBorrowBooks()
             ) { books, members, borrowBooks ->
                 DashboardUiState(
                     totalBooks = books.size,
@@ -45,10 +46,18 @@ class DashboardViewModel @Inject constructor(
                     },
                     isLoading = false
                 )
-            }.collect { dashboardUiState ->
+            }.collectLatest { dashboardUiState ->
                 _uiState.value = dashboardUiState
 
             }
         }
     }
 }
+
+data class DashboardUiState(
+    val totalBooks: Int = 0,
+    val totalMembers: Int = 0,
+    val issuedBooks: Int = 0,
+    val availableBooks: Int = 0,
+    val isLoading: Boolean = true
+)

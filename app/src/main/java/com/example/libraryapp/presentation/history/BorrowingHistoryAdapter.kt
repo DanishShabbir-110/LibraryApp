@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.history
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
@@ -10,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.VH>() {
+class BorrowingHistoryAdapter : RecyclerView.Adapter<BorrowingHistoryAdapter.VH>() {
     private var borrowingHistory = mutableListOf<BorrowingHistoryItem>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(
@@ -61,6 +62,7 @@ class BorrowingHistoryAdapter() : RecyclerView.Adapter<BorrowingHistoryAdapter.V
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(newList: List<BorrowingHistoryItem>) {
         borrowingHistory.clear()
         borrowingHistory.addAll(newList)

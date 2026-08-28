@@ -2,8 +2,8 @@ package com.example.libraryapp.presentation.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.libraryapp.domain.cases.borrowbooks.GetBorrowBooksUseCase
 import com.example.libraryapp.domain.model.BorrowingStatus
+import com.example.libraryapp.domain.repository.BorrowBookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,9 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BorrowingHistoryViewModel @Inject constructor(
-    private val getBorrowBooksUseCase: GetBorrowBooksUseCase
-) : ViewModel() {
+class BorrowingHistoryViewModel @Inject constructor(private val repository: BorrowBookRepository) :
+    ViewModel() {
     private var allBooks: List<BorrowingHistoryItem> = emptyList()
     private var _uiState = MutableStateFlow(BorrowingHistoryUiState())
     val uiState = _uiState.asStateFlow()
@@ -26,7 +25,7 @@ class BorrowingHistoryViewModel @Inject constructor(
 
     private fun getBorrowBooks() {
         viewModelScope.launch {
-            getBorrowBooksUseCase().collectLatest { borrowingHistory ->
+            repository.getAllBorrowBooks().collectLatest { borrowingHistory ->
                 allBooks = borrowingHistory.map { borrowBook ->
                     BorrowingHistoryItem(
                         borrowingId = borrowBook.id,
@@ -93,7 +92,6 @@ class BorrowingHistoryViewModel @Inject constructor(
                 }
             }
         }
-
         _uiState.update {
             it.copy(
                 borrowList = filteredList
@@ -101,3 +99,10 @@ class BorrowingHistoryViewModel @Inject constructor(
         }
     }
 }
+
+data class BorrowingHistoryUiState(
+    val borrowList: List<BorrowingHistoryItem> = emptyList(),
+    val selectedStatus: String = "All",
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null
+)

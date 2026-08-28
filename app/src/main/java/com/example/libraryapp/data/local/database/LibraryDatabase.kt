@@ -1,15 +1,13 @@
 package com.example.libraryapp.data.local.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.libraryapp.data.local.daos.BooksDao
-import com.example.libraryapp.data.local.daos.BorrowBookDao
-import com.example.libraryapp.data.local.daos.MembersDao
-import com.example.libraryapp.data.local.entities.BookEntity
-import com.example.libraryapp.data.local.entities.BorrowBookEntity
-import com.example.libraryapp.data.local.entities.MemberEntity
+import com.example.libraryapp.data.local.dao.BooksDao
+import com.example.libraryapp.data.local.dao.BorrowBookDao
+import com.example.libraryapp.data.local.dao.MembersDao
+import com.example.libraryapp.data.local.entity.BookEntity
+import com.example.libraryapp.data.local.entity.BorrowBookEntity
+import com.example.libraryapp.data.local.entity.MemberEntity
 
 @Database(
     entities = [

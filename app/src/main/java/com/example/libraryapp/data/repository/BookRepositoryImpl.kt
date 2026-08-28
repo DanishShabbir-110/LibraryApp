@@ -1,8 +1,8 @@
 package com.example.libraryapp.data.repository
 
-import com.example.libraryapp.data.local.daos.BooksDao
-import com.example.libraryapp.data.mapper.toDomain
-import com.example.libraryapp.data.mapper.toEntity
+import com.example.libraryapp.data.local.dao.BooksDao
+import com.example.libraryapp.data.local.entity.toDomain
+import com.example.libraryapp.data.local.entity.toEntity
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.repository.BookRepository
 import kotlinx.coroutines.flow.Flow

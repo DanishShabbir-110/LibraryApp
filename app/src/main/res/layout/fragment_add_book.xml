@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:fillViewport="true"
-    tools:context=".presentation.books.addbooks.AddBookFragment">
+    tools:context=".presentation.books.addbook.AddBookFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
