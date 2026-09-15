@@ -7,7 +7,6 @@ import com.example.libraryapp.domain.model.BookCategory
 import com.example.libraryapp.domain.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddBookViewModel @Inject constructor(private val repository: BookRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(AddBookUiState())
-    val uiState: StateFlow<AddBookUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
     fun saveBook() {
         val state = _uiState.value
         if (state.name.isBlank()) {

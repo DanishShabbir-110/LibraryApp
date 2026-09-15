@@ -15,10 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
-import com.example.libraryapp.domain.model.BorrowingStatus
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -28,6 +27,7 @@ class BorrowingHistoryFragment : Fragment() {
     private lateinit var borrowingHistoryAdapter: BorrowingHistoryAdapter
     private var _binding: FragmentBrowsingHistoryBinding? = null
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -103,32 +103,27 @@ class BorrowingHistoryFragment : Fragment() {
     }
 
     private fun setupStatusDropdown() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { state ->
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        state.statusList
+                    )
 
-        val statusList = listOf(
-            "All",
-            "Issued",
-            "Returned"
-        )
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            statusList
-        )
-
-        binding.actStatus.apply {
-            setAdapter(adapter)
-            setText(context.getString(R.string.all), false)
-            keyListener = null
-            setOnItemClickListener { _, _, position, _ ->
-                val selectedStatus = statusList[position]
-                setText(selectedStatus, false)
-                val filter = when (selectedStatus) {
-                    "Issued" -> BorrowingStatus.ISSUED
-                    "Returned" -> BorrowingStatus.RETURNED
-                    else -> BorrowingStatus.ALL
+                    binding.actStatus.apply {
+                        setAdapter(adapter)
+                        setText(
+                            state.selectedStatus.name.lowercase()
+                                .replaceFirstChar { it.uppercase() }, false
+                        )
+                        keyListener = null
+                        setOnItemClickListener { _, _, position, _ ->
+                            viewModel.selected(position)
+                        }
+                    }
                 }
-                viewModel.filterByStatus(filter)
             }
         }
     }

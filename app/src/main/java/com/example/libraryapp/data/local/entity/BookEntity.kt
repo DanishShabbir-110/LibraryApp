@@ -28,9 +28,8 @@ fun BookEntity.toDomain(): Book {
         id = id,
         name = name,
         author = author,
-        category = BookCategory.entries.find {
-            it.name.equals(category, ignoreCase = true)
-        } ?: BookCategory.PROGRAMMING,
+        category = BookCategory.entries.find { it.name.equals(category, ignoreCase = true) }
+            ?: BookCategory.PROGRAMMING,
         totalCopies = totalCopies,
         availableCopies = availableCopies
     )

@@ -1,6 +1,5 @@
 package com.example.libraryapp.presentation.books.addbook
 
-//noinspection SuspiciousImport
 import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentAddBookBinding
 import com.example.libraryapp.domain.model.BookCategory
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -32,11 +32,7 @@ class AddBookFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddBookBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        _binding = FragmentAddBookBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -96,7 +92,7 @@ class AddBookFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(
                 Lifecycle.State.STARTED
             ) {
-                viewModel.uiState.collect { state ->
+                viewModel.uiState.collectLatest { state ->
                     if (binding.etBookTitle.text.toString() != state.name) {
                         binding.etBookTitle.setText(state.name)
                     }
@@ -128,11 +124,7 @@ class AddBookFragment : Fragment() {
                     }
 
                     state.errorMessage?.let { message ->
-                        Toast.makeText(
-                            requireContext(),
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                         viewModel.clearError()
 
                     }
@@ -142,15 +134,9 @@ class AddBookFragment : Fragment() {
                         } else {
                             "Book added successfully"
                         }
-                        Toast.makeText(
-                            requireContext(),
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                         viewModel.clearForm()
                         viewModel.resetSuccessState()
-
                         findNavController().popBackStack()
                     }
 

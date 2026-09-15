@@ -26,22 +26,9 @@ interface BooksDao {
     @Delete
     suspend fun deleteBook(book: BookEntity)
 
-    @Query("""
-    UPDATE book_table
-    SET book_available_copies = book_available_copies - 1
-    WHERE book_id = :bookId
-    AND book_available_copies > 0
-""")
-    suspend fun decreaseAvailableCopies(
-        bookId: Int
-    )
+    @Query("UPDATE book_table SET book_available_copies = book_available_copies - 1 WHERE book_id = :bookId AND book_available_copies > 0")
+    suspend fun decreaseAvailableCopies(bookId: Int)
 
-    @Query("""
-    UPDATE book_table
-    SET book_available_copies = book_available_copies + 1
-    WHERE book_id = :bookId
-""")
-    suspend fun increaseAvailableCopies(
-        bookId: Int
-    )
+    @Query("UPDATE book_table SET book_available_copies = book_available_copies + 1 WHERE book_id = :bookId ")
+    suspend fun increaseAvailableCopies(bookId: Int)
 }

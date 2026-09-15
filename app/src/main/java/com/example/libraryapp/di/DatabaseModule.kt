@@ -39,9 +39,7 @@ object DatabaseModule {
         return database.getMemberDao()
     }
     @Provides
-    fun BorrowBookDao(
-        database: LibraryDatabase
-    ): BorrowBookDao {
+    fun BorrowBookDao(database: LibraryDatabase): BorrowBookDao {
         return database.getBorrowBookDao()
     }
 }

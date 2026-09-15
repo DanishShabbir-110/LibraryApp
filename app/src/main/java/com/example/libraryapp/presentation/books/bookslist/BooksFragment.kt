@@ -109,10 +109,6 @@ class BooksFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
     private fun setupSearch() {
 
@@ -122,6 +118,10 @@ class BooksFragment : Fragment() {
                 editable?.toString().orEmpty()
             )
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

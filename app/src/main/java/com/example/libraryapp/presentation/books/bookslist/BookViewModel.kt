@@ -27,7 +27,6 @@ class BookViewModel @Inject constructor(
     fun getBooks() {
         viewModelScope.launch {
             repository.getAllBooks().collectLatest { books ->
-
                 allBooks = books
                 _uiState.update {
                     it.copy(

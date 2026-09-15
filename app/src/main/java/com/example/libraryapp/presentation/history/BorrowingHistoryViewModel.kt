@@ -13,8 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BorrowingHistoryViewModel @Inject constructor(private val repository: BorrowBookRepository) :
-    ViewModel() {
+class BorrowingHistoryViewModel @Inject constructor(
+    private val repository: BorrowBookRepository
+) : ViewModel() {
     private var allBooks: List<BorrowingHistoryItem> = emptyList()
     private var _uiState = MutableStateFlow(BorrowingHistoryUiState())
     val uiState = _uiState.asStateFlow()
@@ -74,6 +75,12 @@ class BorrowingHistoryViewModel @Inject constructor(private val repository: Borr
         }
     }
 
+    fun selected(position: Int) {
+        val selectedIndexedStatus = _uiState.value.statusList[position]
+        _uiState.update { it.copy(selectedStatus = selectedIndexedStatus) }
+        filterByStatus(selectedIndexedStatus)
+    }
+
     fun filterByStatus(filter: BorrowingStatus) {
 
         val filteredList = when (filter) {
@@ -102,7 +109,8 @@ class BorrowingHistoryViewModel @Inject constructor(private val repository: Borr
 
 data class BorrowingHistoryUiState(
     val borrowList: List<BorrowingHistoryItem> = emptyList(),
-    val selectedStatus: String = "All",
+    val selectedStatus: BorrowingStatus = BorrowingStatus.ALL,
+    val statusList: List<BorrowingStatus> = BorrowingStatus.entries,
     val isLoading: Boolean = true,
     val errorMessage: String? = null
 )
