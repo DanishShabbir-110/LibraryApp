@@ -76,7 +76,6 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
                 member.name.contains(query, ignoreCase = true)
             }
         }
-
         _uiState.update {
             it.copy(
                 members = filteredBooks

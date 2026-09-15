@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.books.addbook
 
+//noinspection SuspiciousImport
 import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,15 +12,12 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentAddBookBinding
 import com.example.libraryapp.domain.model.BookCategory
+import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -88,58 +86,53 @@ class AddBookFragment : Fragment() {
     }
 
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(
-                Lifecycle.State.STARTED
-            ) {
-                viewModel.uiState.collectLatest { state ->
-                    if (binding.etBookTitle.text.toString() != state.name) {
-                        binding.etBookTitle.setText(state.name)
-                    }
+        loadAndRepeatOnStarted {
+            viewModel.uiState.collectLatest { state ->
+                if (binding.etBookTitle.text.toString() != state.name) {
+                    binding.etBookTitle.setText(state.name)
+                }
 
-                    if (binding.etAuthor.text.toString() != state.author) {
-                        binding.etAuthor.setText(state.author)
-                    }
+                if (binding.etAuthor.text.toString() != state.author) {
+                    binding.etAuthor.setText(state.author)
+                }
 
-                    if (binding.actCategory.text.toString() != state.category) {
-                        binding.actCategory.setText(state.category)
-                    }
+                if (binding.actCategory.text.toString() != state.category) {
+                    binding.actCategory.setText(state.category)
+                }
 
-                    if (binding.etTotalCopies.text.toString() != state.totalCopies) {
-                        binding.etTotalCopies.setText(state.totalCopies)
-                    }
+                if (binding.etTotalCopies.text.toString() != state.totalCopies) {
+                    binding.etTotalCopies.setText(state.totalCopies)
+                }
 
-                    binding.loadingOverlay.isVisible = state.isLoading
-                    binding.btnSaveBook.isEnabled = !state.isLoading
+                binding.loadingOverlay.isVisible = state.isLoading
+                binding.btnSaveBook.isEnabled = !state.isLoading
 
-                    if (state.isEditMode) {
-                        binding.tvTitle.text =
-                            getString(com.example.libraryapp.R.string.update_book)
-                        binding.btnSaveBook.text =
-                            getString(com.example.libraryapp.R.string.update_book)
+                if (state.isEditMode) {
+                    binding.tvTitle.text =
+                        getString(com.example.libraryapp.R.string.update_book)
+                    binding.btnSaveBook.text =
+                        getString(com.example.libraryapp.R.string.update_book)
+                } else {
+                    binding.btnSaveBook.text =
+                        getString(com.example.libraryapp.R.string.add_book)
+                    binding.tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                }
+
+                state.errorMessage?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    viewModel.clearError()
+
+                }
+                if (state.isBookAdded) {
+                    val message = if (state.isEditMode) {
+                        "Book Updated Successfully"
                     } else {
-                        binding.btnSaveBook.text =
-                            getString(com.example.libraryapp.R.string.add_book)
-                        binding.tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                        "Book added successfully"
                     }
-
-                    state.errorMessage?.let { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                        viewModel.clearError()
-
-                    }
-                    if (state.isBookAdded) {
-                        val message = if (state.isEditMode) {
-                            "Book Updated Successfully"
-                        } else {
-                            "Book added successfully"
-                        }
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                        viewModel.clearForm()
-                        viewModel.resetSuccessState()
-                        findNavController().popBackStack()
-                    }
-
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    viewModel.clearForm()
+                    viewModel.resetSuccessState()
+                    findNavController().popBackStack()
                 }
             }
         }

@@ -31,11 +31,8 @@ class BorrowingHistoryAdapter : RecyclerView.Adapter<BorrowingHistoryAdapter.VH>
                 tvMemberName.text = borrowBook.memberName
                 tvBookTitle.text = borrowBook.bookName
                 tvIssueDate.text = borrowBook.issueDate.let { "Issued: ${formatDate(it)}" }
-                tvReturnDate.text = borrowBook.returnDate?.let {
-
-                    "Returned: ${formatDate(it)}"
-
-                } ?: "Not Returned"
+                tvReturnDate.text =
+                    borrowBook.returnDate?.let { "Returned: ${formatDate(it)}" } ?: "Not Returned"
                 if (borrowBook.status == BorrowingStatus.ISSUED) {
                     tvStatus.text = borrowBook.status.toString()
                     tvStatus.setBackgroundColor("#FFF7E9".toColorInt())
@@ -52,13 +49,9 @@ class BorrowingHistoryAdapter : RecyclerView.Adapter<BorrowingHistoryAdapter.VH>
             time: Long
         ): String {
 
-            val formatter = SimpleDateFormat(
-                "dd MMM yyyy", Locale.getDefault()
-            )
+            val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
-            return formatter.format(
-                Date(time)
-            )
+            return formatter.format(Date(time))
         }
     }
 

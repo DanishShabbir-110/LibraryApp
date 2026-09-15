@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.members.membersList
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ class MemberAdapter(
 
     override fun getItemCount(): Int = members.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(newList: List<Member>) {
         members.clear()
         members.addAll(newList)
@@ -50,16 +52,11 @@ class MemberAdapter(
             onUpdateClick: (Member) -> Unit
         ) {
             bind.apply {
-
                 tvMemberName.text = member.name
                 tvMemberEmail.text = member.email
                 tvPhone.text = member.phone
-                ivDeleteMember.setOnClickListener {
-                    onDeleteClick(member)
-                }
-                root.setOnClickListener {
-                    onUpdateClick(member)
-                }
+                ivDeleteMember.setOnClickListener { onDeleteClick(member) }
+                root.setOnClickListener { onUpdateClick(member) }
             }
         }
     }

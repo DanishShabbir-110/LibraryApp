@@ -13,28 +13,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddMemberViewModel @Inject constructor(private val repository: MemberRepository) : ViewModel() {
+class AddMemberViewModel @Inject constructor(private val repository: MemberRepository) :
+    ViewModel() {
     private val _uiState = MutableStateFlow(AddMemberUiState())
     val uiState: StateFlow<AddMemberUiState> = _uiState.asStateFlow()
 
     fun saveMember() {
         val state = _uiState.value
         if (state.name.isBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = "Name is required.")
-            }
+            _uiState.update { it.copy(errorMessage = "Name is required.") }
             return
         }
         if (state.email.isBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = "Email is required.")
-            }
+            _uiState.update { it.copy(errorMessage = "Email is required.") }
             return
         }
         if (state.phoneNumber.isBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = "Phone Number is Required")
-            }
+            _uiState.update { it.copy(errorMessage = "Phone Number is Required") }
             return
         }
         viewModelScope.launch {
@@ -83,9 +78,7 @@ class AddMemberViewModel @Inject constructor(private val repository: MemberRepos
     fun loadMember(id: Int) {
         viewModelScope.launch {
             try {
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
+                _uiState.update { it.copy(isLoading = true) }
                 val member = repository.getMemberById(id)
                 if (member == null) {
                     showError("Member not found.")

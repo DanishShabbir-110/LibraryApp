@@ -9,17 +9,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
 import com.example.libraryapp.domain.model.Member
+import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MembersFragment : Fragment() {
@@ -51,24 +49,18 @@ class MembersFragment : Fragment() {
     }
 
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(
-                Lifecycle.State.STARTED
-            ) {
-                viewModel.uiState.collect { state ->
-                    memberAdapter.submitList(state.members)
-                    binding.tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
-                    binding.rvMembers.isVisible = state.members.isNotEmpty()
-                    state.errorMessage?.let { message ->
-
-                        Toast.makeText(
-                            requireContext(),
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        viewModel.clearError()
-                    }
+        loadAndRepeatOnStarted {
+            viewModel.uiState.collectLatest { state ->
+                memberAdapter.submitList(state.members)
+                binding.tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
+                binding.rvMembers.isVisible = state.members.isNotEmpty()
+                state.errorMessage?.let { message ->
+                    Toast.makeText(
+                        requireContext(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.clearError()
                 }
             }
         }
@@ -83,7 +75,6 @@ class MembersFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putInt("memberId", member.id)
                 }
-
                 findNavController().navigate(R.id.addMemberFragment, bundle)
             }
         )
@@ -100,14 +91,9 @@ class MembersFragment : Fragment() {
     }
 
     private fun setupSearch() {
-
-        binding.etSearchMembers
-            .doAfterTextChanged { editable ->
-
-                viewModel.searchMembers(
-                    editable?.toString().orEmpty()
-                )
-            }
+        binding.etSearchMembers.doAfterTextChanged { editable ->
+            viewModel.searchMembers(editable?.toString().orEmpty())
+        }
     }
 
 

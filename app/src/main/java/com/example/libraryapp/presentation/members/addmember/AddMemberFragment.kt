@@ -9,14 +9,12 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAddMemberBinding
+import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class AddMemberFragment : Fragment() {
@@ -47,23 +45,16 @@ class AddMemberFragment : Fragment() {
 
     private fun setupTextListeners() {
         binding.etMemberName.doAfterTextChanged {
-            viewModel.updateName(
-                it?.toString().orEmpty()
-            )
+            viewModel.updateName(it?.toString().orEmpty())
         }
 
         binding.etEmail.doAfterTextChanged {
-            viewModel.updateEmail(
-                it?.toString().orEmpty()
-            )
+            viewModel.updateEmail(it?.toString().orEmpty())
         }
 
         binding.etPhone.doAfterTextChanged {
-            viewModel.updatePhone(
-                it?.toString().orEmpty()
-            )
+            viewModel.updatePhone(it?.toString().orEmpty())
         }
-
     }
 
     private fun setupUpdateScreen() {
@@ -74,62 +65,57 @@ class AddMemberFragment : Fragment() {
     }
 
     private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(
-                Lifecycle.State.STARTED
-            ) {
-                viewModel.uiState.collect { state ->
-                    if (binding.etMemberName.text.toString() != state.name) {
-                        binding.etMemberName.setText(state.name)
-                    }
+        loadAndRepeatOnStarted {
+            viewModel.uiState.collectLatest { state ->
+                if (binding.etMemberName.text.toString() != state.name) {
+                    binding.etMemberName.setText(state.name)
+                }
 
-                    if (binding.etEmail.text.toString() != state.email) {
-                        binding.etEmail.setText(state.email)
-                    }
+                if (binding.etEmail.text.toString() != state.email) {
+                    binding.etEmail.setText(state.email)
+                }
 
-                    if (binding.etPhone.text.toString() != state.phoneNumber) {
-                        binding.etPhone.setText(state.phoneNumber)
-                    }
+                if (binding.etPhone.text.toString() != state.phoneNumber) {
+                    binding.etPhone.setText(state.phoneNumber)
+                }
 
-                    binding.loadingOverlay.isVisible = state.isLoading
-                    binding.btnSaveMember.isEnabled = !state.isLoading
+                binding.loadingOverlay.isVisible = state.isLoading
+                binding.btnSaveMember.isEnabled = !state.isLoading
 
-                    if (state.isEditMode) {
-                        binding.tvTitle.text = getString(R.string.update_member)
-                        binding.btnSaveMember.text = getString(R.string.update_member)
+                if (state.isEditMode) {
+                    binding.tvTitle.text = getString(R.string.update_member)
+                    binding.btnSaveMember.text = getString(R.string.update_member)
+                } else {
+                    binding.tvTitle.text = getString(R.string.save_member)
+                    binding.btnSaveMember.text = getString(R.string.save_member)
+                }
+
+                state.errorMessage?.let { message ->
+                    Toast.makeText(
+                        requireContext(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.clearError()
+
+                }
+                if (state.isMemberAdded) {
+                    val message = if (state.isEditMode) {
+                        "Member Updated Successfully"
                     } else {
-                        binding.tvTitle.text = getString(R.string.save_member)
-                        binding.btnSaveMember.text = getString(R.string.save_member)
+                        "Member added successfully"
                     }
 
-                    state.errorMessage?.let { message ->
-                        Toast.makeText(
-                            requireContext(),
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        viewModel.clearError()
+                    Toast.makeText(
+                        requireContext(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    }
-                    if (state.isMemberAdded) {
-                        val message = if (state.isEditMode) {
-                            "Member Updated Successfully"
-                        } else {
-                            "Member added successfully"
-                        }
+                    viewModel.clearForm()
+                    viewModel.resetSuccessState()
 
-                        Toast.makeText(
-                            requireContext(),
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        viewModel.clearForm()
-                        viewModel.resetSuccessState()
-
-                        findNavController().popBackStack()
-                    }
-
+                    findNavController().popBackStack()
                 }
             }
         }

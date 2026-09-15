@@ -137,11 +137,9 @@ class IssueReturnViewModel @Inject constructor(
 
             BookActionMode.RETURN -> {
 
-                val activeMemberIds = activeBorrowings
-                    .map {
-                        it.memberId
-                    }
-                    .toSet()
+                val activeMemberIds = activeBorrowings.map {
+                    it.memberId
+                }.toSet()
 
                 val returnMembers = allMembers.filter {
                     it.id in activeMemberIds
@@ -150,22 +148,17 @@ class IssueReturnViewModel @Inject constructor(
                 val selectedMemberId = state.selectedMember?.id
 
                 val activeBookIds = if (selectedMemberId != null) {
-                    activeBorrowings
-                        .filter {
-                            it.memberId == selectedMemberId
-                        }
-                        .map {
-                            it.bookId
-                        }
-                        .toSet()
+                    activeBorrowings.filter {
+                        it.memberId == selectedMemberId
+                    }.map {
+                        it.bookId
+                    }.toSet()
                 } else {
                     emptySet()
                 }
-
                 val returnBooks = allBooks.filter {
                     it.id in activeBookIds
                 }
-
                 _uiState.update {
                     it.copy(
                         members = returnMembers,
@@ -207,11 +200,10 @@ class IssueReturnViewModel @Inject constructor(
                     )
                 }
 
-                val activeBorrowBook =
-                    borrowBookRepository.getActiveBorrowBook(
-                        book.id,
-                        member.id
-                    )
+                val activeBorrowBook = borrowBookRepository.getActiveBorrowBook(
+                    book.id,
+                    member.id
+                )
 
                 if (activeBorrowBook != null) {
                     throw IllegalStateException("Book Already issued to that person.")
@@ -247,8 +239,7 @@ class IssueReturnViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.message
-                            ?: "Failed to issue a book."
+                        errorMessage = e.message ?: "Failed to issue a book."
                     )
                 }
             }
@@ -309,6 +300,7 @@ class IssueReturnViewModel @Inject constructor(
             }
         }
     }
+
     private fun showError(message: String) {
         _uiState.update {
             it.copy(
@@ -321,15 +313,6 @@ class IssueReturnViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 errorMessage = null
-            )
-        }
-    }
-
-    fun clearSuccess() {
-        _uiState.update {
-            it.copy(
-                isSuccess = false,
-                successMessage = null
             )
         }
     }
