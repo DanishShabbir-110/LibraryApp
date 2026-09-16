@@ -37,10 +37,7 @@ fun BorrowBookEntity.toDomain(): BorrowBook {
         returnDate = returnDate,
         memberName = memberName,
         bookName = bookName,
-        status = when (status) {
-            "RETURNED" -> BorrowingStatus.RETURNED
-            else -> BorrowingStatus.ISSUED
-        }
+        status = BorrowingStatus.fromString(status)
     )
 }
 

@@ -1,11 +1,14 @@
 package com.example.libraryapp.presentation.books.bookslist
 
+import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -20,6 +23,9 @@ class BookViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(BookUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _events= MutableSharedFlow<BookEvents>()
+    val events=_events.asSharedFlow()
+
     init {
         getBooks()
     }
@@ -31,8 +37,7 @@ class BookViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         books = books,
-                        isLoading = false,
-                        errorMessage = null
+                        isLoading = false
                     )
                 }
             }
@@ -44,11 +49,7 @@ class BookViewModel @Inject constructor(
             try {
                 repository.deleteBook(book)
             } catch (ex: Exception) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = ex.message ?: "Failed to delete a book"
-                    )
-                }
+                _events.emit(BookEvents.ShowError(ex.message ?: "Failed to delete a book"))
             }
         }
     }
@@ -71,17 +72,14 @@ class BookViewModel @Inject constructor(
             )
         }
     }
-
-    fun clearError() {
-        _uiState.update {
-            it.copy(errorMessage = null)
-        }
-    }
 }
 
 data class BookUiState(
     val books: List<Book> = emptyList(),
     val searchQuery: String = "",
-    val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val isLoading: Boolean = true
 )
+
+sealed class BookEvents{
+    data class ShowError(val message: String): BookEvents()
+}

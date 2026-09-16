@@ -41,44 +41,67 @@ class AddBookFragment : Fragment() {
         setupTextListeners()
         setupUpdateScreen()
         observeUiState()
+        observeEvents()
+    }
+
+    private fun observeEvents() {
+        loadAndRepeatOnStarted {
+            viewModel.events.collectLatest { event ->
+                when (event) {
+                    AddBookEvents.BookAdded -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Book added successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        findNavController().popBackStack()
+                    }
+
+                    AddBookEvents.BookUpdated -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Book updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        findNavController().popBackStack()
+                    }
+                    is AddBookEvents.ShowError ->
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun setupTextListeners() {
-        binding.etBookTitle.doAfterTextChanged {
-            viewModel.updateName(
-                it?.toString().orEmpty()
-            )
-        }
+        binding.apply {
 
-        binding.etAuthor.doAfterTextChanged {
-            viewModel.updateAuthor(
-                it?.toString().orEmpty()
-            )
-        }
+            etBookTitle.doAfterTextChanged {
+                viewModel.updateName(it?.toString().orEmpty())
+            }
 
-        binding.actCategory.doAfterTextChanged {
-            viewModel.updateCategory(
-                it?.toString().orEmpty()
-            )
-        }
+            etAuthor.doAfterTextChanged {
+                viewModel.updateAuthor(it?.toString().orEmpty())
+            }
 
-        binding.etTotalCopies.doAfterTextChanged {
-            viewModel.updateTotalCopies(
-                it?.toString().orEmpty()
-            )
+            actCategory.doAfterTextChanged {
+                viewModel.updateCategory(it?.toString().orEmpty())
+            }
+
+            etTotalCopies.doAfterTextChanged {
+                viewModel.updateTotalCopies(it?.toString().orEmpty())
+            }
         }
     }
 
     private fun setupUpdateScreen() {
         val bookId = arguments?.getInt("bookId") ?: -1
-        if (bookId != -1) {
-            viewModel.loadBook(bookId)
-        }
+        viewModel.loadBook(bookId)
     }
 
     private fun setupDropDown() {
         val categoryList = BookCategory.entries.map {
-            it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
+            it.displayName()
         }
         val adapter =
             ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, categoryList)
@@ -88,63 +111,46 @@ class AddBookFragment : Fragment() {
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             viewModel.uiState.collectLatest { state ->
-                if (binding.etBookTitle.text.toString() != state.name) {
-                    binding.etBookTitle.setText(state.name)
-                }
-
-                if (binding.etAuthor.text.toString() != state.author) {
-                    binding.etAuthor.setText(state.author)
-                }
-
-                if (binding.actCategory.text.toString() != state.category) {
-                    binding.actCategory.setText(state.category)
-                }
-
-                if (binding.etTotalCopies.text.toString() != state.totalCopies) {
-                    binding.etTotalCopies.setText(state.totalCopies)
-                }
-
-                binding.loadingOverlay.isVisible = state.isLoading
-                binding.btnSaveBook.isEnabled = !state.isLoading
-
-                if (state.isEditMode) {
-                    binding.tvTitle.text =
-                        getString(com.example.libraryapp.R.string.update_book)
-                    binding.btnSaveBook.text =
-                        getString(com.example.libraryapp.R.string.update_book)
-                } else {
-                    binding.btnSaveBook.text =
-                        getString(com.example.libraryapp.R.string.add_book)
-                    binding.tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
-                }
-
-                state.errorMessage?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    viewModel.clearError()
-
-                }
-                if (state.isBookAdded) {
-                    val message = if (state.isEditMode) {
-                        "Book Updated Successfully"
-                    } else {
-                        "Book added successfully"
+                binding.apply {
+                    if (etBookTitle.text.toString() != state.name) {
+                        etBookTitle.setText(state.name)
                     }
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    viewModel.clearForm()
-                    viewModel.resetSuccessState()
-                    findNavController().popBackStack()
+
+                    if (etAuthor.text.toString() != state.author) {
+                        etAuthor.setText(state.author)
+                    }
+
+                    if (actCategory.text.toString() != state.category) {
+                        actCategory.setText(state.category,false)
+                    }
+
+                    if (etTotalCopies.text.toString() != state.totalCopies) {
+                        etTotalCopies.setText(state.totalCopies)
+                    }
+
+                    loadingOverlay.isVisible = state.isLoading
+                    btnSaveBook.isEnabled = !state.isLoading
+
+                    if (state.isEditMode) {
+                        tvTitle.text = getString(com.example.libraryapp.R.string.update_book)
+                        btnSaveBook.text = getString(com.example.libraryapp.R.string.update_book)
+                    } else {
+                        btnSaveBook.text = getString(com.example.libraryapp.R.string.add_book)
+                        tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                    }
                 }
             }
         }
     }
 
     private fun setupClickListeners() {
-        binding.btnSaveBook.setOnClickListener {
-            viewModel.saveBook()
-        }
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
+        binding.apply {
+            btnSaveBook.setOnClickListener {
+                viewModel.saveBook()
+            }
+            ivBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
     }
-
 }

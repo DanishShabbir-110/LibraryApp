@@ -22,11 +22,12 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): LibraryDatabase {
-        return Room.databaseBuilder(
+        val build: LibraryDatabase = Room.databaseBuilder(
             context,
             LibraryDatabase::class.java,
             "app_database"
         ).build()
+        return build
     }
 
     @Provides

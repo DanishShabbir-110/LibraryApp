@@ -62,16 +62,9 @@ class BorrowingHistoryFragment : Fragment() {
         loadAndRepeatOnStarted {
             viewModel.uiState.collect { state ->
                 borrowingHistoryAdapter.submitList(state.borrowList)
-                binding.tvNoData.isVisible = state.borrowList.isEmpty() && !state.isLoading
-                binding.rvBorrowingHistory.isVisible = state.borrowList.isNotEmpty()
-                state.errorMessage?.let { message ->
-                    Toast.makeText(
-                        requireContext(),
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    viewModel.clearError()
+                binding.apply {
+                    tvNoData.isVisible = state.borrowList.isEmpty() && !state.isLoading
+                    rvBorrowingHistory.isVisible = state.borrowList.isNotEmpty()
                 }
             }
         }

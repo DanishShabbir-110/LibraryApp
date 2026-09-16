@@ -39,18 +39,10 @@ class BorrowingHistoryViewModel @Inject constructor(
                 }
                 _uiState.update {
                     it.copy(
-                        borrowList = allBooks, isLoading = false, errorMessage = null
+                        borrowList = allBooks, isLoading = false
                     )
                 }
             }
-        }
-    }
-
-    fun clearError() {
-        _uiState.update {
-            it.copy(
-                errorMessage = null
-            )
         }
     }
 
@@ -111,6 +103,5 @@ data class BorrowingHistoryUiState(
     val borrowList: List<BorrowingHistoryItem> = emptyList(),
     val selectedStatus: BorrowingStatus = BorrowingStatus.ALL,
     val statusList: List<BorrowingStatus> = BorrowingStatus.entries,
-    val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val isLoading: Boolean = true
 )

@@ -17,6 +17,7 @@ import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
@@ -48,7 +49,19 @@ class BooksFragment : Fragment() {
         setupClickListeners()
         observeUiState()
         setupSearch()
+        observeEvents()
+    }
 
+    private fun observeEvents() {
+        loadAndRepeatOnStarted {
+            viewModel.events.collectLatest { event ->
+                when (event) {
+                    is BookEvents.ShowError -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun observeUiState() {
@@ -59,10 +72,6 @@ class BooksFragment : Fragment() {
                     loadingOverlay.isVisible = state.isLoading
                     tvNoData.isVisible = state.books.isEmpty() && !state.isLoading
                     rvBooks.isVisible = state.books.isNotEmpty()
-                }
-                state.errorMessage?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    viewModel.clearError()
                 }
             }
         }
@@ -106,12 +115,8 @@ class BooksFragment : Fragment() {
 
 
     private fun setupSearch() {
-
         binding.etSearchBooks.doAfterTextChanged { editable ->
-
-            viewModel.searchBooks(
-                editable?.toString().orEmpty()
-            )
+            viewModel.searchBooks(editable?.toString().orEmpty())
         }
     }
 

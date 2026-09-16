@@ -26,8 +26,7 @@
 
 
     <!-- Splash Theme -->
-    <style name="Theme.LibraryApp.Splash"
-        parent="Theme.SplashScreen">
+    <style name="Theme.LibraryApp.Splash" parent="Theme.SplashScreen">
 
         <!-- Splash background -->
         <item name="windowSplashScreenBackground">@color/background</item>

@@ -1,7 +1,11 @@
 package com.example.libraryapp.domain.model
 
-enum class BookCategory(val displayName: String) {
-    PROGRAMMING("Programming"),
-    DATABASE("Database"),
-    RESEARCH("Research")
+enum class BookCategory {
+    PROGRAMMING,
+    DATABASE,
+    RESEARCH;
+
+    fun displayName(): String {
+        return name.lowercase().replaceFirstChar { it.uppercase() }
+    }
 }

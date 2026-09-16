@@ -42,7 +42,7 @@ class BooksAdapter(
            bind.apply {
                 tvBookTitle.text = book.name
                 tvBookAuthor.text = book.author.let { "Author: ${book.author}" }
-                tvBookCategory.text = book.category.let { "Category: ${book.category.displayName}" }
+                tvBookCategory.text = book.category.let { "Category: ${book.category.displayName()}" }
                 tvBookAvailability.text = book.availableCopies.let { "Available: ${book.availableCopies} / ${book.totalCopies}" }
                 ivDeleteBook.setOnClickListener {
                     onDeleteClick(book)

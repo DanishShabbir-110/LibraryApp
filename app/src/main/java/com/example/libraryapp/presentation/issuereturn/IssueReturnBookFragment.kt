@@ -106,92 +106,93 @@ class IssueReturnBookFragment : Fragment() {
                             tilIssueDate.hide()
                         }
                     }
-                }
 
-                val memberNames = state.members.map { it.name }
+                    val memberNames = state.members.map { it.name }
 
-                val memberAdapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    memberNames
-                )
-                binding.apply {
+                    val memberAdapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        memberNames
+                    )
                     actMember.setAdapter(memberAdapter)
                     actMember.setOnItemClickListener { _, _, position, _ ->
                         val selectedMember = state.members[position]
                         viewModel.selectMember(selectedMember)
                     }
-                }
 
-                val bookNames = state.books.map { it.name }
 
-                val bookAdapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    bookNames
-                )
-                binding.apply {
+                    val bookNames = state.books.map { it.name }
+
+                    val bookAdapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        bookNames
+                    )
+
                     actBook.setAdapter(bookAdapter)
                     actBook.setOnItemClickListener { _, _, position, _ ->
                         val selectedBook = state.books[position]
                         viewModel.selectBook(selectedBook)
                     }
-                }
 
-                val selectedMemberName = state.selectedMember?.name.orEmpty()
-                if (binding.actMember.text.toString() != selectedMemberName) {
-                    binding.actMember.setText(selectedMemberName, false)
-                }
 
-                val selectedBookName = state.selectedBook?.name.orEmpty()
-                if (binding.actBook.text.toString() != selectedBookName) {
-                    binding.actBook.setText(selectedBookName, false)
-                }
+                    val selectedMemberName = state.selectedMember?.name.orEmpty()
+                    if (actMember.text.toString() != selectedMemberName) {
+                        actMember.setText(selectedMemberName, false)
+                    }
 
-                val issueDateText = state.issueDate?.let { formatDate(it) }.orEmpty()
-                if (binding.etIssueDate.text.toString() != issueDateText) {
-                    binding.etIssueDate.setText(issueDateText)
-                }
+                    val selectedBookName = state.selectedBook?.name.orEmpty()
+                    if (actBook.text.toString() != selectedBookName) {
+                        actBook.setText(selectedBookName, false)
+                    }
 
-                val returnDateText = state.returnDate?.let { formatDate(it) }.orEmpty()
-                if (binding.etReturnDate.text.toString() != returnDateText) {
-                    binding.etReturnDate.setText(returnDateText)
-                }
+                    val issueDateText = state.issueDate?.let { formatDate(it) }.orEmpty()
+                    if (etIssueDate.text.toString() != issueDateText) {
+                        etIssueDate.setText(issueDateText)
+                    }
 
-                state.errorMessage?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    viewModel.clearError()
-                }
+                    val returnDateText = state.returnDate?.let { formatDate(it) }.orEmpty()
+                    if (etReturnDate.text.toString() != returnDateText) {
+                        etReturnDate.setText(returnDateText)
+                    }
 
-                if (state.isSuccess) {
-                    Toast.makeText(requireContext(), state.successMessage, Toast.LENGTH_SHORT).show()
-                    viewModel.clearForm()
+                    state.errorMessage?.let { message ->
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        viewModel.clearError()
+                    }
 
-                    findNavController().popBackStack(R.id.nav_home, false)
-                    (requireActivity() as MainActivity).selectBottomTab(R.id.nav_history)
+                    if (state.isSuccess) {
+                        Toast.makeText(requireContext(), state.successMessage, Toast.LENGTH_SHORT)
+                            .show()
+                        viewModel.clearForm()
+
+                        findNavController().popBackStack(R.id.nav_home, false)
+                        (requireActivity() as MainActivity).selectBottomTab(R.id.nav_history)
+                    }
                 }
             }
         }
     }
 
     private fun setupClickListeners() {
+        binding.apply {
+            ivBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
 
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
+            etIssueDate.setOnClickListener {
+                showDatePicker(DateType.ISSUEDATE)
+            }
 
-        binding.etIssueDate.setOnClickListener {
-            showDatePicker(DateType.ISSUEDATE)
-        }
+            etReturnDate.setOnClickListener {
+                showDatePicker(DateType.RETURNDATE)
+            }
 
-        binding.etReturnDate.setOnClickListener {
-            showDatePicker(DateType.RETURNDATE)
-        }
-
-        binding.btnSubmit.setOnClickListener {
-            when (viewModel.uiState.value.mode) {
-                BookActionMode.ISSUE -> viewModel.issueBook()
-                BookActionMode.RETURN -> viewModel.returnBook()
+            btnSubmit.setOnClickListener {
+                when (viewModel.uiState.value.mode) {
+                    BookActionMode.ISSUE -> viewModel.issueBook()
+                    BookActionMode.RETURN -> viewModel.returnBook()
+                }
             }
         }
     }
