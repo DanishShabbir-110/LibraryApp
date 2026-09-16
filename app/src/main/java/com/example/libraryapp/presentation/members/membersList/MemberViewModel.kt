@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -20,6 +22,10 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
     private var _uiState = MutableStateFlow(MemberUiState())
     val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
+    private val _events= MutableSharedFlow<MemberEvents>()
+    val events= _events.asSharedFlow()
+
+
     init {
         loadMembers()
     }
@@ -28,11 +34,9 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
         viewModelScope.launch {
             repository.getAllMembers().catch { exception ->
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = exception.message ?: "Failed to load members"
-                    )
+                    it.copy(isLoading = false)
                 }
+                _events.emit(MemberEvents.ShowError(exception.message ?: "Failed to load members"))
             }.collectLatest { members ->
                 allMembers = members
                 _uiState.update {
@@ -49,21 +53,14 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
         viewModelScope.launch {
             try {
                 repository.deleteMember(member)
+                _events.emit(MemberEvents.MemberDeleted)
             } catch (ex: Exception) {
+                _events.emit(MemberEvents.ShowError(ex.message ?: "Failed to delete member"))
+            }finally {
                 _uiState.update {
-                    it.copy(
-                        errorMessage = ex.message ?: "Failed to delete member."
-                    )
+                    it.copy(isLoading = false)
                 }
             }
-        }
-    }
-
-    fun clearError() {
-        _uiState.update {
-            it.copy(
-                errorMessage = null
-            )
         }
     }
 
@@ -86,6 +83,10 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
 
 data class MemberUiState(
     val members: List<Member> = emptyList(),
-    val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val isLoading: Boolean = true
 )
+
+sealed class MemberEvents{
+    data class ShowError(val message:String): MemberEvents()
+    data object MemberDeleted: MemberEvents()
+}

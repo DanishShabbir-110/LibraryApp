@@ -59,6 +59,14 @@ class BooksFragment : Fragment() {
                     is BookEvents.ShowError -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
+
+                    BookEvents.BookDeleted -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Book deleted successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }

@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,70 +20,81 @@ class AddMemberViewModel @Inject constructor(private val repository: MemberRepos
     private val _uiState = MutableStateFlow(AddMemberUiState())
     val uiState: StateFlow<AddMemberUiState> = _uiState.asStateFlow()
 
+    private val _events = MutableSharedFlow<AddMemberEvents>()
+    val events = _events.asSharedFlow()
+
+
     fun saveMember() {
         val state = _uiState.value
-        if (state.name.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Name is required.") }
-            return
-        }
-        if (state.email.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Email is required.") }
-            return
-        }
-        if (state.phoneNumber.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Phone Number is Required") }
-            return
-        }
         viewModelScope.launch {
+            if (!validateMember(state)) return@launch
             _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
+                it.copy(isLoading = true)
             }
             try {
                 if (state.isEditMode) {
-                    val oldMember = repository.getMemberById(state.id)
-                    if (oldMember == null) {
-                        showError("Not Member found.")
-                    }
-
-                    val updateMember = Member(
-                        id = state.id,
-                        name = state.name,
-                        email = state.email,
-                        phone = state.phoneNumber
-                    )
-                    repository.updateMember(updateMember)
+                    updateMember(state)
                 } else {
-                    val member = Member(
-                        name = state.name.trim(),
-                        email = state.email.trim(),
-                        phone = state.phoneNumber.trim()
-                    )
-                    repository.addMember(member)
-                }
-                _uiState.update {
-                    it.copy(isLoading = false, isMemberAdded = true)
+                    addMember(state)
                 }
             } catch (e: Exception) {
+                _events.emit(AddMemberEvents.ShowError(e.message ?: "Failed to save Member"))
+            } finally {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to save Member"
-                    )
+                    it.copy(isLoading = false)
                 }
             }
         }
     }
 
+    private suspend fun addMember(state: AddMemberUiState) {
+        val member = Member(
+            name = state.name.trim(),
+            email = state.email.trim(),
+            phone = state.phoneNumber.trim()
+        )
+        repository.addMember(member)
+        _events.emit(AddMemberEvents.MemberAdded)
+    }
+
+    private suspend fun updateMember(state: AddMemberUiState) {
+        val oldMember =
+            repository.getMemberById(state.id) ?: throw IllegalStateException("Member not found.")
+
+        val updateMember = Member(
+            id = state.id,
+            name = state.name,
+            email = state.email,
+            phone = state.phoneNumber
+        )
+        repository.updateMember(updateMember)
+        _events.emit(AddMemberEvents.MemberUpdated)
+    }
+
+    private suspend fun validateMember(state: AddMemberUiState): Boolean {
+        if (state.name.isBlank()) {
+            _events.emit(AddMemberEvents.ShowError("Name is required."))
+            return false
+        }
+        if (state.email.isBlank()) {
+            _events.emit(AddMemberEvents.ShowError("Email is required."))
+            return false
+        }
+        if (state.phoneNumber.isBlank()) {
+            _events.emit(AddMemberEvents.ShowError("Phone Number is Required"))
+            return false
+        }
+        return true
+    }
+
     fun loadMember(id: Int) {
+        if (id < 0) return
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true) }
                 val member = repository.getMemberById(id)
                 if (member == null) {
-                    showError("Member not found.")
+                    _events.emit(AddMemberEvents.ShowError("Member not found."))
                     return@launch
                 }
                 _uiState.update {
@@ -95,8 +108,10 @@ class AddMemberViewModel @Inject constructor(private val repository: MemberRepos
                     )
                 }
             } catch (ex: Exception) {
+                _events.emit(AddMemberEvents.ShowError(ex.message ?: "Failed to load Member"))
+            } finally {
                 _uiState.update {
-                    it.copy(isLoading = false, errorMessage = ex.message ?: "Failed to load Member")
+                    it.copy(isLoading = false)
                 }
             }
         }
@@ -119,28 +134,6 @@ class AddMemberViewModel @Inject constructor(private val repository: MemberRepos
             it.copy(phoneNumber = phoneNumber)
         }
     }
-
-    fun clearError() {
-        _uiState.update {
-            it.copy(errorMessage = null)
-        }
-    }
-
-    fun resetSuccessState() {
-        _uiState.update {
-            it.copy(isMemberAdded = false)
-        }
-    }
-
-    fun clearForm() {
-        _uiState.value = AddMemberUiState()
-    }
-
-    private fun showError(message: String) {
-        _uiState.update {
-            it.copy(errorMessage = message)
-        }
-    }
 }
 
 data class AddMemberUiState(
@@ -149,7 +142,11 @@ data class AddMemberUiState(
     val email: String = "",
     val phoneNumber: String = "",
     val isEditMode: Boolean = false,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val isMemberAdded: Boolean = false
+    val isLoading: Boolean = false
 )
+
+sealed class AddMemberEvents {
+    data class ShowError(val message: String) : AddMemberEvents()
+    data object MemberAdded : AddMemberEvents()
+    data object MemberUpdated : AddMemberEvents()
+}

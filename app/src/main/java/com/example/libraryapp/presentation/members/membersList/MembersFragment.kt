@@ -46,21 +46,40 @@ class MembersFragment : Fragment() {
         setupRecyclerView()
         setupClickListeners()
         observeUiState()
+        observeUiEvents()
+    }
+
+    private fun observeUiEvents() {
+        loadAndRepeatOnStarted {
+            viewModel.events.collectLatest { event ->
+                when (event) {
+                    MemberEvents.MemberDeleted -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Member deleted successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is MemberEvents.ShowError -> {
+                        Toast.makeText(
+                            requireContext(),
+                            event.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             viewModel.uiState.collectLatest { state ->
                 memberAdapter.submitList(state.members)
-                binding.tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
-                binding.rvMembers.isVisible = state.members.isNotEmpty()
-                state.errorMessage?.let { message ->
-                    Toast.makeText(
-                        requireContext(),
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    viewModel.clearError()
+                binding.apply {
+                    tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
+                    rvMembers.isVisible = state.members.isNotEmpty()
                 }
             }
         }
@@ -109,7 +128,6 @@ class MembersFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
     }
 }

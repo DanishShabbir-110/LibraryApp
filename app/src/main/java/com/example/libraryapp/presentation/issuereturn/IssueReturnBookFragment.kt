@@ -51,6 +51,24 @@ class IssueReturnBookFragment : Fragment() {
         setupToggleButton()
         setupClickListeners()
         observeUiState()
+        observeUiEvents()
+    }
+
+    private fun observeUiEvents() {
+        loadAndRepeatOnStarted {
+            viewModel.events.collectLatest { event ->
+                when (event) {
+                    is IssueReturnBookEvents.ErrorMessage -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is IssueReturnBookEvents.SuccessMessage -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack(R.id.nav_home, false)
+                        (requireActivity() as MainActivity).selectBottomTab(R.id.nav_history)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupToggleButton() {
@@ -154,20 +172,6 @@ class IssueReturnBookFragment : Fragment() {
                     val returnDateText = state.returnDate?.let { formatDate(it) }.orEmpty()
                     if (etReturnDate.text.toString() != returnDateText) {
                         etReturnDate.setText(returnDateText)
-                    }
-
-                    state.errorMessage?.let { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                        viewModel.clearError()
-                    }
-
-                    if (state.isSuccess) {
-                        Toast.makeText(requireContext(), state.successMessage, Toast.LENGTH_SHORT)
-                            .show()
-                        viewModel.clearForm()
-
-                        findNavController().popBackStack(R.id.nav_home, false)
-                        (requireActivity() as MainActivity).selectBottomTab(R.id.nav_history)
                     }
                 }
             }

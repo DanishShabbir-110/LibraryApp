@@ -1,6 +1,5 @@
 package com.example.libraryapp.presentation.books.bookslist
 
-import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
@@ -23,8 +22,8 @@ class BookViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(BookUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _events= MutableSharedFlow<BookEvents>()
-    val events=_events.asSharedFlow()
+    private val _events = MutableSharedFlow<BookEvents>()
+    val events = _events.asSharedFlow()
 
     init {
         getBooks()
@@ -48,6 +47,7 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.deleteBook(book)
+                _events.emit(BookEvents.BookDeleted)
             } catch (ex: Exception) {
                 _events.emit(BookEvents.ShowError(ex.message ?: "Failed to delete a book"))
             }
@@ -80,6 +80,7 @@ data class BookUiState(
     val isLoading: Boolean = true
 )
 
-sealed class BookEvents{
-    data class ShowError(val message: String): BookEvents()
+sealed class BookEvents {
+    data class ShowError(val message: String) : BookEvents()
+    data object BookDeleted : BookEvents()
 }
