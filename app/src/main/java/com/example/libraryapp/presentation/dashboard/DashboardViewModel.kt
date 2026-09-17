@@ -8,7 +8,6 @@ import com.example.libraryapp.domain.repository.BorrowBookRepository
 import com.example.libraryapp.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -21,8 +20,17 @@ class DashboardViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val borrowBookRepository: BorrowBookRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(DashboardUiState())
-    val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
+    private val _totalBooks = MutableStateFlow(0)
+    val totalBooks = _totalBooks.asStateFlow()
+    private val _totalMembers = MutableStateFlow(0)
+    val totalMembers = _totalMembers.asStateFlow()
+    private val _issueBooks = MutableStateFlow(0)
+    val issueBooks = _issueBooks.asStateFlow()
+    private val _availableCopies = MutableStateFlow(0)
+    val availableCopies = _availableCopies.asStateFlow()
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
+
 
     init {
         loadDashboardData()
@@ -35,29 +43,16 @@ class DashboardViewModel @Inject constructor(
                 memberRepository.getAllMembers(),
                 borrowBookRepository.getAllBorrowBooks()
             ) { books, members, borrowBooks ->
-                DashboardUiState(
-                    totalBooks = books.size,
-                    totalMembers = members.size,
-                    issuedBooks = borrowBooks.count {
-                        it.status == BorrowingStatus.ISSUED
-                    },
-                    availableBooks = books.sumOf {
-                        it.availableCopies
-                    },
-                    isLoading = false
-                )
-            }.collectLatest { dashboardUiState ->
-                _uiState.value = dashboardUiState
-
-            }
+                _totalBooks.value = books.size
+                _totalMembers.value = members.size
+                _issueBooks.value = borrowBooks.count {
+                    it.status == BorrowingStatus.ISSUED
+                }
+                _availableCopies.value = books.sumOf {
+                    it.availableCopies
+                }
+                _isLoading.value = false
+            }.collectLatest {}
         }
     }
 }
-
-data class DashboardUiState(
-    val totalBooks: Int = 0,
-    val totalMembers: Int = 0,
-    val issuedBooks: Int = 0,
-    val availableBooks: Int = 0,
-    val isLoading: Boolean = true
-)

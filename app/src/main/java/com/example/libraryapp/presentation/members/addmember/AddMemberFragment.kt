@@ -1,39 +1,24 @@
 package com.example.libraryapp.presentation.members.addmember
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAddMemberBinding
+import com.example.libraryapp.presentation.base.BaseFragment
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddMemberFragment : Fragment() {
-    private val viewModel: AddMemberViewModel by viewModels()
-
-    private var _binding: FragmentAddMemberBinding? = null
-    private val binding get() = _binding!!
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAddMemberBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-        return binding.root
-    }
-
+class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewModel>(
+    FragmentAddMemberBinding::inflate,
+    AddMemberViewModel::class.java
+) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -65,6 +50,7 @@ class AddMemberFragment : Fragment() {
                         ).show()
                         findNavController().popBackStack()
                     }
+
                     is AddMemberEvents.ShowError -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
@@ -96,29 +82,43 @@ class AddMemberFragment : Fragment() {
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collectLatest { state ->
-                binding.apply {
-                    if (etMemberName.text.toString() != state.name) {
-                        etMemberName.setText(state.name)
+            binding.apply {
+                launch {
+                    viewModel.name.collectLatest { name ->
+                        if (etMemberName.text.toString() != name) {
+                            etMemberName.setText(name)
+                        }
                     }
-
-                    if (etEmail.text.toString() != state.email) {
-                        etEmail.setText(state.email)
+                }
+                launch {
+                    viewModel.phoneNumber.collectLatest { phoneNumber ->
+                        if (etPhone.text.toString() != phoneNumber) {
+                            etPhone.setText(phoneNumber)
+                        }
                     }
-
-                    if (etPhone.text.toString() != state.phoneNumber) {
-                        etPhone.setText(state.phoneNumber)
+                }
+                launch {
+                    viewModel.email.collectLatest { email ->
+                        if (etEmail.text.toString() != email) {
+                            etEmail.setText(email)
+                        }
                     }
-
-                    loadingOverlay.isVisible = state.isLoading
-                    btnSaveMember.isEnabled = !state.isLoading
-
-                    if (state.isEditMode) {
-                        tvTitle.text = getString(R.string.update_member)
-                        btnSaveMember.text = getString(R.string.update_member)
-                    } else {
-                        tvTitle.text = getString(R.string.save_member)
-                        btnSaveMember.text = getString(R.string.save_member)
+                }
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        loadingOverlay.isVisible = isLoading
+                        btnSaveMember.isEnabled = !isLoading
+                    }
+                }
+                launch {
+                    viewModel.isEditMode.collectLatest { isEditMode ->
+                        if (isEditMode) {
+                            tvTitle.text = getString(R.string.update_member)
+                            btnSaveMember.text = getString(R.string.update_member)
+                        } else {
+                            tvTitle.text = getString(R.string.save_member)
+                            btnSaveMember.text = getString(R.string.save_member)
+                        }
                     }
                 }
             }
@@ -134,10 +134,5 @@ class AddMemberFragment : Fragment() {
                 findNavController().popBackStack()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

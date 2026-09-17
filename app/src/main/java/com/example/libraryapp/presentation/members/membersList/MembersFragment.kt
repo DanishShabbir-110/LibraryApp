@@ -1,43 +1,29 @@
 package com.example.libraryapp.presentation.members.membersList
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentMembersBinding
 import com.example.libraryapp.domain.model.Member
+import com.example.libraryapp.presentation.base.BaseFragment
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MembersFragment : Fragment() {
-
-    private val viewModel: MemberViewModel by viewModels()
-    private var _binding: FragmentMembersBinding? = null
-    private val binding get() = _binding!!
+class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
+    FragmentMembersBinding::inflate,
+    MemberViewModel::class.java
+) {
     private lateinit var memberAdapter: MemberAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentMembersBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,11 +61,28 @@ class MembersFragment : Fragment() {
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collectLatest { state ->
-                memberAdapter.submitList(state.members)
-                binding.apply {
-                    tvNoData.isVisible = state.members.isEmpty() && !state.isLoading
-                    rvMembers.isVisible = state.members.isNotEmpty()
+            binding.apply {
+
+                launch {
+                    viewModel.members.collectLatest { members ->
+                        memberAdapter.submitList(members)
+                        rvMembers.isVisible = members.isNotEmpty()
+                    }
+                }
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        loadingOverlay.isVisible = isLoading
+                    }
+                }
+                launch {
+                    combine(
+                        viewModel.members,
+                        viewModel.isLoading
+                    ) { members, isLoading ->
+                        members.isEmpty() && !isLoading
+                    }.collectLatest { showNoData ->
+                        tvNoData.isVisible = showNoData
+                    }
                 }
             }
         }
@@ -124,10 +127,5 @@ class MembersFragment : Fragment() {
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deleteMember(member)
             }.show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

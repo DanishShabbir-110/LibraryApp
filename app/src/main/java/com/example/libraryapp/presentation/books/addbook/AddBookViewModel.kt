@@ -1,164 +1,145 @@
 package com.example.libraryapp.presentation.books.addbook
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.model.BookCategory
 import com.example.libraryapp.domain.repository.BookRepository
+import com.example.libraryapp.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddBookViewModel @Inject constructor(private val repository: BookRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(AddBookUiState())
-    val uiState = _uiState.asStateFlow()
+class AddBookViewModel @Inject constructor(
+    private val repository: BookRepository
+) : BaseViewModel<AddBookEvents>() {
+    private var bookId: Int = 0
+    private var _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
+    private var _author = MutableStateFlow("")
+    val author = _author.asStateFlow()
 
-    private val _events = MutableSharedFlow<AddBookEvents>()
-    val events = _events.asSharedFlow()
+    private var _category = MutableStateFlow("")
+    val category = _category.asStateFlow()
+    private var _totalCopies = MutableStateFlow("")
+    val totalCopies = _totalCopies.asStateFlow()
+
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private var _isEditMode = MutableStateFlow(false)
+    val isEditMode = _isEditMode.asStateFlow()
+
     fun saveBook() {
         viewModelScope.launch {
-            val state = _uiState.value
-            val totalCopies = validateBook(state) ?: return@launch
-
-            _uiState.update {
-                it.copy(isLoading = true)
-            }
+            val totalCopies = validateBook() ?: return@launch
+            _isLoading.value = true
             try {
-                if (state.isEditMode)
-                    updateBook(state, totalCopies)
+                if (_isEditMode.value)
+                    updateBook(totalCopies)
                 else
-                    addBook(state, totalCopies)
+                    addBook(totalCopies)
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
-                _events.emit(AddBookEvents.ShowError(e.message ?: "Failed to save book"))
+                sendEvent(AddBookEvents.ShowError(e.message ?: "Failed to save book"))
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
-    fun loadBook(bookId: Int) {
-        if(bookId<0) return
+    fun loadBook(id: Int) {
+        if (id < 0) return
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
-                val book = repository.getBookById(bookId)
+                val book = repository.getBookById(id)
                 if (book == null) {
-                    _events.emit(AddBookEvents.ShowError("Book Not Found."))
+                    sendEvent(AddBookEvents.ShowError("Book Not Found."))
                     return@launch
                 }
-
-                _uiState.update {
-                    it.copy(
-                        id = book.id,
-                        name = book.name,
-                        author = book.author,
-                        category = book.category.name,
-                        totalCopies = book.totalCopies.toString(),
-                        availableCopies = book.availableCopies,
-                        isEditMode = true,
-                        isLoading = false
-                    )
-                }
+                bookId = book.id
+                _name.value = book.name
+                _author.value = book.author
+                _category.value = book.category.displayName()
+                _totalCopies.value = book.totalCopies.toString()
+                _isEditMode.value = true
             } catch (ex: Exception) {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
-                _events.emit(AddBookEvents.ShowError(ex.message ?: "Failed to load a book."))
+                sendEvent(AddBookEvents.ShowError(ex.message ?: "Failed to load a book."))
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun updateName(name: String) {
-        _uiState.update {
-            it.copy(name = name)
-        }
+        _name.value = name
     }
 
     fun updateAuthor(author: String) {
-        _uiState.update {
-            it.copy(author = author)
-        }
+        _author.value = author
     }
 
     fun updateCategory(category: String) {
-        _uiState.update {
-            it.copy(category = category)
-        }
+        _category.value = category
     }
 
     fun updateTotalCopies(totalCopies: String) {
-        _uiState.update {
-            it.copy(totalCopies = totalCopies)
-        }
+        _totalCopies.value = totalCopies
     }
 
-    private suspend fun updateBook(state: AddBookUiState, totalCopies: Int) {
-        val oldBook = repository.getBookById(state.id)
+    private suspend fun updateBook(totalCopies: Int) {
+        val oldBook = repository.getBookById(bookId)
             ?: throw IllegalStateException("Book Not found.")
         val borrowCopies = oldBook.totalCopies - oldBook.availableCopies
-        val selectedCategory = findCategory(state.category)
+        val selectedCategory = findCategory(_category.value)
             ?: throw IllegalStateException("Please select a valid category.")
         if (totalCopies < borrowCopies) {
             throw IllegalStateException("Total copies cannot be less than borrowed copies")
         }
         val updateBook = Book(
-            id = state.id,
-            name = state.name.trim(),
-            author = state.author.trim(),
+            id = bookId,
+            name = _name.value.trim(),
+            author = _author.value.trim(),
             category = selectedCategory,
             totalCopies = totalCopies,
             availableCopies = totalCopies - borrowCopies
         )
         repository.updateBook(updateBook)
-        _uiState.update {
-            it.copy(isLoading = false)
-        }
-        _events.emit(AddBookEvents.BookUpdated)
-
+        sendEvent(AddBookEvents.BookUpdated)
     }
 
-    private suspend fun addBook(state: AddBookUiState, totalCopies: Int) {
-        val selectedCategory = findCategory(state.category)
+    private suspend fun addBook(totalCopies: Int) {
+        val selectedCategory = findCategory(_category.value)
             ?: throw IllegalStateException("Please select a valid category.")
         val book = Book(
-            name = state.name.trim(),
-            author = state.author.trim(),
+            name = _name.value.trim(),
+            author = _author.value.trim(),
             category = selectedCategory,
             totalCopies = totalCopies,
             availableCopies = totalCopies
         )
         repository.addBook(book)
-        _uiState.update {
-            it.copy(isLoading = false)
-        }
-        _events.emit(AddBookEvents.BookAdded)
+        sendEvent(AddBookEvents.BookAdded)
     }
 
-    private suspend fun validateBook(state: AddBookUiState): Int? {
-        if (state.name.isBlank()) {
-            _events.emit(AddBookEvents.ShowError("Book Name is Required."))
+    private suspend fun validateBook(): Int? {
+        if (_name.value.isBlank()) {
+            sendEvent(AddBookEvents.ShowError("Book Name is Required."))
             return null
         }
-        if (state.author.isBlank()) {
-            _events.emit(AddBookEvents.ShowError("Author name is required."))
+        if (_author.value.isBlank()) {
+            sendEvent(AddBookEvents.ShowError("Author name is required."))
             return null
         }
-        if (state.category.isBlank()) {
-            _events.emit(AddBookEvents.ShowError("Select Category"))
+        if (_category.value.isBlank()) {
+            sendEvent(AddBookEvents.ShowError("Select Category"))
             return null
         }
-        val copies = state.totalCopies.toIntOrNull()
+        val copies = _totalCopies.value.toIntOrNull()
         if (copies == null || copies <= 0) {
-            _events.emit(AddBookEvents.ShowError("Total copies must be greater than 0"))
+            sendEvent(AddBookEvents.ShowError("Total copies must be greater than 0"))
             return null
         }
         return copies
@@ -176,18 +157,6 @@ class AddBookViewModel @Inject constructor(private val repository: BookRepositor
         }
     }
 }
-
-
-data class AddBookUiState(
-    val id: Int = 0,
-    val name: String = "",
-    val author: String = "",
-    val category: String = "",
-    val totalCopies: String = "",
-    val availableCopies: Int = 0,
-    val isEditMode: Boolean = false,
-    val isLoading: Boolean = false
-)
 
 sealed class AddBookEvents {
     data class ShowError(val message: String) : AddBookEvents()

@@ -1,37 +1,27 @@
 package com.example.libraryapp.presentation.history
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
+import com.example.libraryapp.presentation.base.BaseFragment
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BorrowingHistoryFragment : Fragment() {
-    private val viewModel: BorrowingHistoryViewModel by viewModels()
-
+class BorrowingHistoryFragment :
+    BaseFragment<FragmentBrowsingHistoryBinding, BorrowingHistoryViewModel>(
+        FragmentBrowsingHistoryBinding::inflate,
+        BorrowingHistoryViewModel::class.java
+    ) {
     private lateinit var borrowingHistoryAdapter: BorrowingHistoryAdapter
-    private var _binding: FragmentBrowsingHistoryBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentBrowsingHistoryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,11 +50,20 @@ class BorrowingHistoryFragment : Fragment() {
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collect { state ->
-                borrowingHistoryAdapter.submitList(state.borrowList)
-                binding.apply {
-                    tvNoData.isVisible = state.borrowList.isEmpty() && !state.isLoading
-                    rvBorrowingHistory.isVisible = state.borrowList.isNotEmpty()
+            binding.apply {
+                launch {
+                    viewModel.borrowBooks.collectLatest { borrowBooks ->
+                        borrowingHistoryAdapter.submitList(borrowBooks)
+                        rvBorrowingHistory.isVisible = borrowBooks.isNotEmpty()
+                    }
+                }
+                launch {
+                    combine(viewModel.borrowBooks,viewModel.isLoading){books, isLoading ->
+                        books.isEmpty()&&!isLoading
+                    }.collectLatest {
+                        tvNoData.isVisible = it
+
+                    }
                 }
             }
         }
@@ -89,23 +88,25 @@ class BorrowingHistoryFragment : Fragment() {
 
     private fun setupStatusDropdown() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collectLatest { state ->
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    state.statusList
-                )
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                viewModel.statusList
+            )
 
-                binding.actStatus.apply {
-                    setAdapter(adapter)
-                    setText(
-                        state.selectedStatus.name.lowercase()
-                            .replaceFirstChar { it.uppercase() }, false
-                    )
-                    keyListener = null
-                    setOnItemClickListener { _, _, position, _ ->
-                        viewModel.selected(position)
+            binding.actStatus.apply {
+                setAdapter(adapter)
+                launch {
+                    viewModel.selectedStatus.collectLatest { selectedStatus ->
+                        setText(
+                            selectedStatus.name.lowercase()
+                                .replaceFirstChar { it.uppercase() }, false
+                        )
                     }
+                }
+                keyListener = null
+                setOnItemClickListener { _, _, position, _ ->
+                    viewModel.selected(position)
                 }
             }
         }

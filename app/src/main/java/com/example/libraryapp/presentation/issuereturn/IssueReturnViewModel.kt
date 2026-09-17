@@ -1,6 +1,5 @@
 package com.example.libraryapp.presentation.issuereturn
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.model.BorrowBook
@@ -9,16 +8,13 @@ import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.domain.repository.BookRepository
 import com.example.libraryapp.domain.repository.BorrowBookRepository
 import com.example.libraryapp.domain.repository.MemberRepository
+import com.example.libraryapp.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -26,17 +22,27 @@ class IssueReturnViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val memberRepository: MemberRepository,
     private val borrowBookRepository: BorrowBookRepository
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(IssueReturnUiState())
-    val uiState: StateFlow<IssueReturnUiState> = _uiState.asStateFlow()
-
-    private val _events = MutableSharedFlow<IssueReturnBookEvents>()
-    val events = _events.asSharedFlow()
-
+) : BaseViewModel<IssueReturnBookEvents>() {
     private var allBooks: List<Book> = emptyList()
     private var allMembers: List<Member> = emptyList()
     private var activeBorrowings: List<BorrowBook> = emptyList()
+
+    private var _mode = MutableStateFlow(BookActionMode.ISSUE)
+    val mode = _mode.asStateFlow()
+    private var _members = MutableStateFlow<List<Member>>(emptyList())
+    val members = _members.asStateFlow()
+    private var _books = MutableStateFlow<List<Book>>(emptyList())
+    val books = _books.asStateFlow()
+    private var _selectedMember = MutableStateFlow<Member?>(null)
+    val selectedMember = _selectedMember.asStateFlow()
+    private var _selectedBook = MutableStateFlow<Book?>(null)
+    val selectedBook = _selectedBook.asStateFlow()
+    private var _issueDate = MutableStateFlow<Long?>(null)
+    val issueDate = _issueDate.asStateFlow()
+    private var _returnDate = MutableStateFlow<Long?>(null)
+    val returnDate = _returnDate.asStateFlow()
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         loadData()
@@ -64,71 +70,44 @@ class IssueReturnViewModel @Inject constructor(
     }
 
     fun selectMode(mode: BookActionMode) {
-        _uiState.update {
-            it.copy(
-                mode = mode,
-                selectedMember = null,
-                selectedBook = null,
-                issueDate = null,
-                returnDate = null
-            )
-        }
-
+        _mode.value = mode
+        _selectedMember.value = null
+        _selectedBook.value = null
+        _issueDate.value = null
+        _returnDate.value = null
         updateDropdownData()
     }
 
     fun selectMember(member: Member) {
-        _uiState.update {
-            it.copy(
-                selectedMember = member, selectedBook = null
-            )
-        }
-
-        if (_uiState.value.mode == BookActionMode.RETURN) {
+        _selectedMember.value = member
+        _selectedBook.value = null
+        if (_mode.value == BookActionMode.RETURN) {
             updateDropdownData()
         }
     }
 
     fun selectBook(book: Book) {
-        _uiState.update {
-            it.copy(
-                selectedBook = book
-            )
-        }
+        _selectedBook.value = book
     }
 
     fun selectIssueDate(date: Long) {
-        _uiState.update {
-            it.copy(
-                issueDate = date
-            )
-        }
+        _issueDate.value = date
     }
 
     fun selectReturnDate(date: Long) {
-        _uiState.update {
-            it.copy(
-                returnDate = date
-            )
-        }
+        _returnDate.value = date
     }
 
     private fun updateDropdownData() {
-        val state = _uiState.value
-
-        when (state.mode) {
+        when (_mode.value) {
 
             BookActionMode.ISSUE -> {
 
                 val availableBooks = allBooks.filter {
                     it.availableCopies > 0
                 }
-
-                _uiState.update {
-                    it.copy(
-                        members = allMembers, books = availableBooks
-                    )
-                }
+                _members.value = allMembers
+                _books.value = availableBooks
             }
 
             BookActionMode.RETURN -> {
@@ -141,7 +120,7 @@ class IssueReturnViewModel @Inject constructor(
                     it.id in activeMemberIds
                 }
 
-                val selectedMemberId = state.selectedMember?.id
+                val selectedMemberId = _selectedMember.value?.id
 
                 val activeBookIds = if (selectedMemberId != null) {
                     activeBorrowings.filter {
@@ -155,31 +134,24 @@ class IssueReturnViewModel @Inject constructor(
                 val returnBooks = allBooks.filter {
                     it.id in activeBookIds
                 }
-                _uiState.update {
-                    it.copy(
-                        members = returnMembers, books = returnBooks
-                    )
-                }
+                _members.value = returnMembers
+                _books.value = returnBooks
             }
         }
     }
 
     fun issueBook() {
         viewModelScope.launch {
-            val state = _uiState.value
-
-            val (member, book) = validateTheSelection(state) ?: return@launch
-            val issueDate = state.issueDate
+            val (member, book) = validateTheSelection() ?: return@launch
+            val issueDate = _issueDate.value
 
             if (issueDate == null) {
-                _events.emit(IssueReturnBookEvents.ErrorMessage("Please Select Issue Date."))
+                sendEvent(IssueReturnBookEvents.ErrorMessage("Please Select Issue Date."))
                 return@launch
             }
 
             try {
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
+                _isLoading.value = true
 
                 val activeBorrowBook = borrowBookRepository.getActiveBorrowBook(
                     book.id, member.id
@@ -207,39 +179,32 @@ class IssueReturnViewModel @Inject constructor(
 
                 bookRepository.decreaseAvailableCopies(book.id)
 
-                _events.emit(IssueReturnBookEvents.SuccessMessage("Book Issued Successfully"))
+                sendEvent(IssueReturnBookEvents.SuccessMessage("Book Issued Successfully"))
 
             } catch (e: Exception) {
-                _events.emit(
+                sendEvent(
                     IssueReturnBookEvents.ErrorMessage(
                         e.message ?: "Failed to issue a book."
                     )
                 )
             } finally {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                    )
-                }
+                _isLoading.value = false
             }
         }
     }
 
     fun returnBook() {
         viewModelScope.launch {
-            val state = _uiState.value
-            val (member, book) = validateTheSelection(state) ?: return@launch
-            val returnDate = state.returnDate
+            val (member, book) = validateTheSelection() ?: return@launch
+            val returnDate = _returnDate.value
 
             if (returnDate == null) {
-                _events.emit(IssueReturnBookEvents.ErrorMessage("Please Select Return Date."))
+                sendEvent(IssueReturnBookEvents.ErrorMessage("Please Select Return Date."))
                 return@launch
             }
 
             try {
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
+                _isLoading.value = true
 
                 val activeBorrowBook = borrowBookRepository.getActiveBorrowBook(book.id, member.id)
                     ?: throw IllegalStateException("No active borrowing found for this book and member.")
@@ -248,32 +213,30 @@ class IssueReturnViewModel @Inject constructor(
 
                 bookRepository.increaseAvailableCopies(book.id)
 
-                _events.emit(IssueReturnBookEvents.SuccessMessage("Book Returned Successfully"))
+                sendEvent(IssueReturnBookEvents.SuccessMessage("Book Returned Successfully"))
             } catch (e: Exception) {
-                _events.emit(
+                sendEvent(
                     IssueReturnBookEvents.ErrorMessage(
                         e.message ?: "Failed to return a book."
                     )
                 )
-            }finally {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
-    private suspend fun validateTheSelection(state: IssueReturnUiState): Pair<Member, Book>? {
-        val member = state.selectedMember
-        val book = state.selectedBook
+    private suspend fun validateTheSelection(): Pair<Member, Book>? {
+        val member = _selectedMember.value
+        val book = _selectedBook.value
 
         if (member == null) {
-            _events.emit(IssueReturnBookEvents.ErrorMessage("Please Select a member."))
+            sendEvent(IssueReturnBookEvents.ErrorMessage("Please Select a member."))
             return null
         }
 
         if (book == null) {
-            _events.emit(IssueReturnBookEvents.ErrorMessage("Please Select a book."))
+            sendEvent(IssueReturnBookEvents.ErrorMessage("Please Select a book."))
             return null
         }
 
@@ -284,17 +247,6 @@ class IssueReturnViewModel @Inject constructor(
 enum class BookActionMode {
     ISSUE, RETURN
 }
-
-data class IssueReturnUiState(
-    val mode: BookActionMode = BookActionMode.ISSUE,
-    val members: List<Member> = emptyList(),
-    val books: List<Book> = emptyList(),
-    val selectedMember: Member? = null,
-    val selectedBook: Book? = null,
-    val issueDate: Long? = null,
-    val returnDate: Long? = null,
-    val isLoading: Boolean = false
-)
 
 sealed class IssueReturnBookEvents {
     data class SuccessMessage(val message: String) : IssueReturnBookEvents()

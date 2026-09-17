@@ -1,46 +1,30 @@
 package com.example.libraryapp.presentation.books.bookslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBooksBinding
 import com.example.libraryapp.domain.model.Book
+import com.example.libraryapp.presentation.base.BaseFragment
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class BooksFragment : Fragment() {
-    private val viewModel: BookViewModel by viewModels()
-    private var _binding: FragmentBooksBinding? = null
-    private val binding get() = _binding!!
-
+class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
+    FragmentBooksBinding::inflate,
+    BookViewModel::class.java
+) {
     private lateinit var bookAdapter: BooksAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentBooksBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-
-
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,12 +58,24 @@ class BooksFragment : Fragment() {
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collect { state ->
-                bookAdapter.submitList(state.books)
-                binding.apply {
-                    loadingOverlay.isVisible = state.isLoading
-                    tvNoData.isVisible = state.books.isEmpty() && !state.isLoading
-                    rvBooks.isVisible = state.books.isNotEmpty()
+            binding.apply {
+                launch {
+                    viewModel.books.collectLatest { books ->
+                        bookAdapter.submitList(books)
+                        rvBooks.isVisible = books.isNotEmpty()
+                    }
+                }
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        loadingOverlay.isVisible = isLoading
+                    }
+                }
+                launch {
+                    combine(viewModel.books, viewModel.isLoading) { books, isLoading ->
+                        books.isEmpty() && !isLoading
+                    }.collectLatest { showData ->
+                        tvNoData.isVisible = showData
+                    }
                 }
             }
         }
@@ -121,16 +117,10 @@ class BooksFragment : Fragment() {
         }
     }
 
-
     private fun setupSearch() {
         binding.etSearchBooks.doAfterTextChanged { editable ->
             viewModel.searchBooks(editable?.toString().orEmpty())
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
 

@@ -3,37 +3,26 @@ package com.example.libraryapp.presentation.books.addbook
 //noinspection SuspiciousImport
 import android.R
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.libraryapp.databinding.FragmentAddBookBinding
 import com.example.libraryapp.domain.model.BookCategory
+import com.example.libraryapp.presentation.base.BaseFragment
 import com.example.libraryapp.utils.loadAndRepeatOnStarted
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class AddBookFragment : Fragment() {
-    private val viewModel: AddBookViewModel by viewModels()
-    private var _binding: FragmentAddBookBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAddBookBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
+class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
+    FragmentAddBookBinding::inflate,
+    AddBookViewModel::class.java
+) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDropDown()
@@ -66,6 +55,7 @@ class AddBookFragment : Fragment() {
 
                         findNavController().popBackStack()
                     }
+
                     is AddBookEvents.ShowError ->
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                 }
@@ -110,33 +100,53 @@ class AddBookFragment : Fragment() {
 
     private fun observeUiState() {
         loadAndRepeatOnStarted {
-            viewModel.uiState.collectLatest { state ->
-                binding.apply {
-                    if (etBookTitle.text.toString() != state.name) {
-                        etBookTitle.setText(state.name)
+            binding.apply {
+                launch {
+                    viewModel.name.collectLatest { name ->
+                        if (etBookTitle.text.toString() != name) {
+                            etBookTitle.setText(name)
+                        }
                     }
-
-                    if (etAuthor.text.toString() != state.author) {
-                        etAuthor.setText(state.author)
+                }
+                launch {
+                    viewModel.author.collectLatest { author ->
+                        if (etAuthor.text.toString() != author) {
+                            etAuthor.setText(author)
+                        }
                     }
+                    launch {
 
-                    if (actCategory.text.toString() != state.category) {
-                        actCategory.setText(state.category,false)
                     }
-
-                    if (etTotalCopies.text.toString() != state.totalCopies) {
-                        etTotalCopies.setText(state.totalCopies)
+                }
+                launch {
+                    viewModel.category.collectLatest { category ->
+                        if (actCategory.text.toString() != category) {
+                            actCategory.setText(category, false)
+                        }
                     }
-
-                    loadingOverlay.isVisible = state.isLoading
-                    btnSaveBook.isEnabled = !state.isLoading
-
-                    if (state.isEditMode) {
-                        tvTitle.text = getString(com.example.libraryapp.R.string.update_book)
-                        btnSaveBook.text = getString(com.example.libraryapp.R.string.update_book)
-                    } else {
-                        btnSaveBook.text = getString(com.example.libraryapp.R.string.add_book)
-                        tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                }
+                launch {
+                    viewModel.totalCopies.collectLatest { totalCopies ->
+                        if (etTotalCopies.text.toString() != totalCopies) {
+                            etTotalCopies.setText(totalCopies)
+                        }
+                    }
+                }
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        loadingOverlay.isVisible = isLoading
+                        btnSaveBook.isEnabled = !isLoading
+                    }
+                }
+                launch {
+                    viewModel.isEditMode.collectLatest { isEditMode ->
+                        if (isEditMode) {
+                            tvTitle.text = getString(com.example.libraryapp.R.string.update_book)
+                            btnSaveBook.text = getString(com.example.libraryapp.R.string.update_book)
+                        } else {
+                            btnSaveBook.text = getString(com.example.libraryapp.R.string.add_book)
+                            tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                        }
                     }
                 }
             }

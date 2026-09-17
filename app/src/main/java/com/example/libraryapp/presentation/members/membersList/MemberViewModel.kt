@@ -1,30 +1,28 @@
 package com.example.libraryapp.presentation.members.membersList
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Member
 import com.example.libraryapp.domain.repository.MemberRepository
+import com.example.libraryapp.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MemberViewModel @Inject constructor( private val repository: MemberRepository) : ViewModel() {
+class MemberViewModel @Inject constructor(
+    private val repository: MemberRepository
+) : BaseViewModel<MemberEvents>() {
     private var allMembers: List<Member> = emptyList()
-    private var _uiState = MutableStateFlow(MemberUiState())
-    val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
-    private val _events= MutableSharedFlow<MemberEvents>()
-    val events= _events.asSharedFlow()
+    private var _members = MutableStateFlow<List<Member>>(emptyList())
+    val members = _members.asStateFlow()
 
+    private var _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         loadMembers()
@@ -33,18 +31,12 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
     private fun loadMembers() {
         viewModelScope.launch {
             repository.getAllMembers().catch { exception ->
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
-                _events.emit(MemberEvents.ShowError(exception.message ?: "Failed to load members"))
+                _isLoading.value = false
+                sendEvent(MemberEvents.ShowError(exception.message ?: "Failed to load members"))
             }.collectLatest { members ->
                 allMembers = members
-                _uiState.update {
-                    it.copy(
-                        members = members,
-                        isLoading = false
-                    )
-                }
+                _members.value = members
+                _isLoading.value = false
             }
         }
     }
@@ -53,40 +45,30 @@ class MemberViewModel @Inject constructor( private val repository: MemberReposit
         viewModelScope.launch {
             try {
                 repository.deleteMember(member)
-                _events.emit(MemberEvents.MemberDeleted)
+                sendEvent(MemberEvents.MemberDeleted)
             } catch (ex: Exception) {
-                _events.emit(MemberEvents.ShowError(ex.message ?: "Failed to delete member"))
-            }finally {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
+                sendEvent(MemberEvents.ShowError(ex.message ?: "Failed to delete member"))
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun searchMembers(query: String) {
 
-        val filteredBooks = if (query.isBlank()) {
+        val filteredMembers = if (query.isBlank()) {
             allMembers
         } else {
             allMembers.filter { member ->
                 member.name.contains(query, ignoreCase = true)
             }
         }
-        _uiState.update {
-            it.copy(
-                members = filteredBooks
-            )
-        }
+        _members.value = filteredMembers
     }
 }
 
-data class MemberUiState(
-    val members: List<Member> = emptyList(),
-    val isLoading: Boolean = true
-)
 
-sealed class MemberEvents{
-    data class ShowError(val message:String): MemberEvents()
-    data object MemberDeleted: MemberEvents()
+sealed class MemberEvents {
+    data class ShowError(val message: String) : MemberEvents()
+    data object MemberDeleted : MemberEvents()
 }

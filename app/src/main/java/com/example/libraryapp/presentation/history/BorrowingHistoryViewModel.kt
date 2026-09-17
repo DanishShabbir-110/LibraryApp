@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,8 +16,13 @@ class BorrowingHistoryViewModel @Inject constructor(
     private val repository: BorrowBookRepository
 ) : ViewModel() {
     private var allBooks: List<BorrowingHistoryItem> = emptyList()
-    private var _uiState = MutableStateFlow(BorrowingHistoryUiState())
-    val uiState = _uiState.asStateFlow()
+    private var _selectedStatus = MutableStateFlow(BorrowingStatus.ALL)
+    val selectedStatus = _selectedStatus.asStateFlow()
+    private var _borrowBooks = MutableStateFlow<List<BorrowingHistoryItem>>(emptyList())
+    val borrowBooks = _borrowBooks.asStateFlow()
+    val statusList = BorrowingStatus.entries
+    private var _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         getBorrowBooks()
@@ -37,11 +41,8 @@ class BorrowingHistoryViewModel @Inject constructor(
                         status = borrowBook.status
                     )
                 }
-                _uiState.update {
-                    it.copy(
-                        borrowList = allBooks, isLoading = false
-                    )
-                }
+                _borrowBooks.value = allBooks
+                _isLoading.value = false
             }
         }
     }
@@ -59,22 +60,16 @@ class BorrowingHistoryViewModel @Inject constructor(
                 )
             }
         }
-
-        _uiState.update {
-            it.copy(
-                borrowList = filteredBooks
-            )
-        }
+        _borrowBooks.value = filteredBooks
     }
 
     fun selected(position: Int) {
-        val selectedIndexedStatus = _uiState.value.statusList[position]
-        _uiState.update { it.copy(selectedStatus = selectedIndexedStatus) }
+        val selectedIndexedStatus = statusList[position]
+        _selectedStatus.value = selectedIndexedStatus
         filterByStatus(selectedIndexedStatus)
     }
 
     fun filterByStatus(filter: BorrowingStatus) {
-
         val filteredList = when (filter) {
 
             BorrowingStatus.ALL -> allBooks
@@ -91,17 +86,6 @@ class BorrowingHistoryViewModel @Inject constructor(
                 }
             }
         }
-        _uiState.update {
-            it.copy(
-                borrowList = filteredList
-            )
-        }
+        _borrowBooks.value = filteredList
     }
 }
-
-data class BorrowingHistoryUiState(
-    val borrowList: List<BorrowingHistoryItem> = emptyList(),
-    val selectedStatus: BorrowingStatus = BorrowingStatus.ALL,
-    val statusList: List<BorrowingStatus> = BorrowingStatus.entries,
-    val isLoading: Boolean = true
-)

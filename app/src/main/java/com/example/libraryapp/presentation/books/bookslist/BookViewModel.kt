@@ -1,29 +1,25 @@
 package com.example.libraryapp.presentation.books.bookslist
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.libraryapp.domain.model.Book
 import com.example.libraryapp.domain.repository.BookRepository
+import com.example.libraryapp.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BookViewModel @Inject constructor(
     private val repository: BookRepository
-) : ViewModel() {
+) : BaseViewModel<BookEvents>() {
     private var allBooks: List<Book> = emptyList()
-    private var _uiState = MutableStateFlow(BookUiState())
-    val uiState = _uiState.asStateFlow()
-
-    private val _events = MutableSharedFlow<BookEvents>()
-    val events = _events.asSharedFlow()
+    private var _books = MutableStateFlow<List<Book>>(emptyList())
+    val books = _books.asStateFlow()
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
     init {
         getBooks()
@@ -33,12 +29,8 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getAllBooks().collectLatest { books ->
                 allBooks = books
-                _uiState.update {
-                    it.copy(
-                        books = books,
-                        isLoading = false
-                    )
-                }
+                _books.value = books
+                _isLoading.value = false
             }
         }
     }
@@ -47,15 +39,14 @@ class BookViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.deleteBook(book)
-                _events.emit(BookEvents.BookDeleted)
+                sendEvent(BookEvents.BookDeleted)
             } catch (ex: Exception) {
-                _events.emit(BookEvents.ShowError(ex.message ?: "Failed to delete a book"))
+                sendEvent(BookEvents.ShowError(ex.message ?: "Failed to delete a book"))
             }
         }
     }
 
     fun searchBooks(query: String) {
-
         val filteredBooks = if (query.isBlank()) {
             allBooks
         } else {
@@ -65,20 +56,9 @@ class BookViewModel @Inject constructor(
                         book.category.name.contains(query, ignoreCase = true)
             }
         }
-
-        _uiState.update {
-            it.copy(
-                books = filteredBooks
-            )
-        }
+        _books.value = filteredBooks
     }
 }
-
-data class BookUiState(
-    val books: List<Book> = emptyList(),
-    val searchQuery: String = "",
-    val isLoading: Boolean = true
-)
 
 sealed class BookEvents {
     data class ShowError(val message: String) : BookEvents()
