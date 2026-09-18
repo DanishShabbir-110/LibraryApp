@@ -2,6 +2,7 @@ package com.example.libraryapp.presentation.books.addbook
 
 //noinspection SuspiciousImport
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.libraryapp.databinding.FragmentAddBookBinding
 import com.example.libraryapp.domain.model.BookCategory
 import com.example.libraryapp.presentation.base.BaseFragment
@@ -23,6 +25,7 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
     FragmentAddBookBinding::inflate,
     AddBookViewModel::class.java
 ) {
+    private val args: AddBookFragmentArgs by navArgs()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDropDown()
@@ -85,7 +88,7 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
     }
 
     private fun setupUpdateScreen() {
-        val bookId = arguments?.getInt("bookId") ?: -1
+        val bookId = args.bookId
         viewModel.loadBook(bookId)
     }
 
@@ -98,6 +101,7 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
         binding.actCategory.setAdapter(adapter)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
@@ -134,7 +138,8 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
                 }
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
-                        loadingOverlay.isVisible = isLoading
+                        loadingOverlay.root.isVisible = isLoading
+                        loadingOverlay.tvLoadingText.text="Adding Book..."
                         btnSaveBook.isEnabled = !isLoading
                     }
                 }

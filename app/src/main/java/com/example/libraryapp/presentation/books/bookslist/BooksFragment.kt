@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.books.bookslist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -56,6 +57,7 @@ class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
@@ -67,7 +69,8 @@ class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
                 }
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
-                        loadingOverlay.isVisible = isLoading
+                        loadingOverlay.root.isVisible = isLoading
+                        loadingOverlay.tvLoadingText.text = "Loading Books..."
                     }
                 }
                 launch {
@@ -87,10 +90,10 @@ class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
                 showDeleteDialog(book)
             },
             onUpdateClick = { book ->
-                val bundle = Bundle().apply {
-                    putInt("bookId", book.id)
-                }
-                findNavController().navigate(R.id.addBookFragment, bundle)
+                val action = BooksFragmentDirections.bookFragmentToAddBookFragment(
+                    bookId = book.id
+                )
+                findNavController().navigate(action)
             }
         )
 

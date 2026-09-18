@@ -36,14 +36,10 @@
             app:tint="@color/text_on_primary" />
 
         <TextView
+            style="@style/LibraryTitleText"
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:text="@string/issue_book"
-            android:textColor="@color/text_on_primary"
-            android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/ivBack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBack"

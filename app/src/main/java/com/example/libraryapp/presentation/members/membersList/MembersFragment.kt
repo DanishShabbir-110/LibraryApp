@@ -94,10 +94,8 @@ class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
                 showDeleteDialog(member)
             },
             onUpdateClick = { member ->
-                val bundle = Bundle().apply {
-                    putInt("memberId", member.id)
-                }
-                findNavController().navigate(R.id.addMemberFragment, bundle)
+               val action= MembersFragmentDirections.memberFragmentToAddMemberFragment(memberId = member.id)
+                findNavController().navigate(action)
             }
         )
         binding.rvMembers.apply {

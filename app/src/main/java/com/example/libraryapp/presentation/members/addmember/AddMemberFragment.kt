@@ -1,11 +1,13 @@
 package com.example.libraryapp.presentation.members.addmember
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentAddMemberBinding
 import com.example.libraryapp.presentation.base.BaseFragment
@@ -19,6 +21,7 @@ class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewMo
     FragmentAddMemberBinding::inflate,
     AddMemberViewModel::class.java
 ) {
+    private val args: AddMemberFragmentArgs by navArgs()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -76,10 +79,11 @@ class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewMo
     }
 
     private fun setupUpdateScreen() {
-        val memberId = arguments?.getInt("memberId") ?: -1
+        val memberId = args.memberId
         viewModel.loadMember(memberId)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
@@ -106,7 +110,8 @@ class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewMo
                 }
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
-                        loadingOverlay.isVisible = isLoading
+                        loadingOverlay.root.isVisible=isLoading
+                        loadingOverlay.tvLoadingText.text="Adding Member..."
                         btnSaveMember.isEnabled = !isLoading
                     }
                 }

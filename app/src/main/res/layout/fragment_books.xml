@@ -17,14 +17,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        style="@style/LibraryTitleText"
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:text="Books"
-        android:textColor="@color/text_on_primary"
         android:textAlignment="center"
-        android:textSize="22sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
         app:layout_constraintEnd_toEndOf="@id/topBarBackground"
         app:layout_constraintStart_toStartOf="@id/topBarBackground"
@@ -126,37 +122,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <FrameLayout
+    <include
         android:id="@+id/loadingOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:clickable="true"
-        android:elevation="20dp"
-        android:focusable="true"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ProgressBar
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:indeterminateTint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Loading Books...\nPlease Wait"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </FrameLayout>
+        layout="@layout/loading_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

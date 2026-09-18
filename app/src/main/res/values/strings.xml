@@ -13,4 +13,18 @@
     <string name="save_member">Save Member</string>
     <string name="issue_book">Issue Book</string>
     <string name="return_book">Return Book</string>
+    <string name="add_member">Add Member</string>
+    <string name="member">Member</string>
+    <string name="full_name">Full name</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone number</string>
+    <string name="save_member_btn">SAVE MEMBER</string>
+    <string name="book_view">Book</string>
+    <string name="book_title">Book title</string>
+    <string name="author">Author</string>
+    <string name="select_category">Select Category</string>
+    <string name="total_copies">Total copies</string>
+    <string name="add_book_view">Add Book</string>
+    <string name="save_book">SAVE BOOK</string>
+    <string name="back">Back</string>
 </resources>

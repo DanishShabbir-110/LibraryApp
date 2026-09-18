@@ -1,5 +1,6 @@
 package com.example.libraryapp.presentation.history
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -48,6 +49,7 @@ class BorrowingHistoryFragment :
         binding.ivBack.isVisible = showBackArrow
     }
 
+    @SuppressLint("SetTextI18n")
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
@@ -55,6 +57,12 @@ class BorrowingHistoryFragment :
                     viewModel.borrowBooks.collectLatest { borrowBooks ->
                         borrowingHistoryAdapter.submitList(borrowBooks)
                         rvBorrowingHistory.isVisible = borrowBooks.isNotEmpty()
+                    }
+                }
+                launch {
+                    viewModel.isLoading.collectLatest {isLoading->
+                        loadingOverlay.root.isVisible=isLoading
+                        loadingOverlay.tvLoadingText.text="Loading History..."
                     }
                 }
                 launch {
