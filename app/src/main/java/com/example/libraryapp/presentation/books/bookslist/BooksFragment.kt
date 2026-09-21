@@ -61,6 +61,8 @@ class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
+                titleHeader.tvTitle.text="Books"
+                searchBar.etSearch.hint = getString(R.string.search_books)
                 launch {
                     viewModel.books.collectLatest { books ->
                         bookAdapter.submitList(books)
@@ -121,7 +123,7 @@ class BooksFragment : BaseFragment<FragmentBooksBinding, BookViewModel>(
     }
 
     private fun setupSearch() {
-        binding.etSearchBooks.doAfterTextChanged { editable ->
+        binding.searchBar.etSearch.doAfterTextChanged { editable ->
             viewModel.searchBooks(editable?.toString().orEmpty())
         }
     }

@@ -27,4 +27,13 @@
     <string name="add_book_view">Add Book</string>
     <string name="save_book">SAVE BOOK</string>
     <string name="back">Back</string>
+    <string name="choose_member">Choose member</string>
+    <string name="search_books">Search Books...\n</string>
+    <string name="search_members">Search Members....\n</string>
+    <string name="total_books">Total Books</string>
+    <string name="available_books">Available Books</string>
+    <string name="total_members">Members</string>
+    <string name="borrowed_books">Borrowed Books</string>
+    <string name="issue_return_book">Issue/Return Book</string>
+    <string name="search">Search icon</string>
 </resources>

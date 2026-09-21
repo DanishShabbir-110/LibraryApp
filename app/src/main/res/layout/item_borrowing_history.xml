@@ -3,29 +3,22 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/surface"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="1dp"
-    app:strokeColor="@color/border"
-    app:strokeWidth="1dp">
+    style="@style/LibraryListItemCard">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="@dimen/_12sdp">
 
         <!-- Dummy Book Icon -->
 
         <ImageView
             android:id="@+id/ivBook"
-            android:layout_width="72dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="@dimen/_100sdp"
             android:background="#E8EEFF"
             android:contentDescription="Book"
-            android:padding="18dp"
+            android:padding="@dimen/_18sdp"
             android:src="@drawable/iv_books"
             app:tint="@color/primary"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,14 +29,10 @@
 
         <TextView
             android:id="@+id/tvBookTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="12dp"
+            style="@style/LibraryItemTitle"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:text="Clean Code"
-            android:textColor="@color/text_primary"
-            android:textSize="17sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/tvStatus"
             app:layout_constraintStart_toEndOf="@id/ivBook"
             app:layout_constraintTop_toTopOf="parent" />
@@ -53,13 +42,13 @@
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="@dimen/_36sdp"
             android:gravity="center"
-            android:minWidth="88dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            android:minWidth="@dimen/_88sdp"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingEnd="@dimen/_12sdp"
             android:text="Returned"
-            android:textSize="14sp"
+            android:textSize="@dimen/_14ssp"
             android:textStyle="bold"
             android:textColor="@color/success"
             android:background="#E8F7F1"
@@ -72,11 +61,11 @@
             android:id="@+id/tvMemberName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_6sdp"
             android:text="Ali Raza"
             android:textColor="@color/text_secondary"
-            android:textSize="15sp"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBook"
             app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
@@ -87,11 +76,11 @@
             android:id="@+id/tvIssueDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:text="Issued: 15 Aug 2025"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBook"
             app:layout_constraintTop_toBottomOf="@id/tvMemberName" />
@@ -102,11 +91,11 @@
             android:id="@+id/tvReturnDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_4sdp"
             android:text="Return: 22 Aug 2025"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBook"
             app:layout_constraintTop_toBottomOf="@id/tvIssueDate" />

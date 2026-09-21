@@ -77,7 +77,7 @@ class IssueReturnBookFragment : BaseFragment<FragmentIssueReturnBookBinding, Iss
             binding.apply {
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
-                        loadingOverlay.isVisible = isLoading
+                        loadingOverlay.root.isVisible = isLoading
                         btnSubmit.isEnabled = !isLoading
                     }
                 }
@@ -89,8 +89,8 @@ class IssueReturnBookFragment : BaseFragment<FragmentIssueReturnBookBinding, Iss
                                     toggleAction.check(R.id.btnIssueMode)
                                 }
 
-                                tvTitle.text = getString(R.string.issue_book)
-
+                                formHeader.tvTitle.text = getString(R.string.issue_book)
+                                loadingOverlay.tvLoadingText.text=getString(R.string.issue_book)
                                 btnSubmit.text = getString(R.string.issue_book)
 
                                 tvIssueDateLabel.show()
@@ -105,8 +105,8 @@ class IssueReturnBookFragment : BaseFragment<FragmentIssueReturnBookBinding, Iss
                                     toggleAction.check(R.id.btnReturnMode)
                                 }
 
-                                tvTitle.text = getString(R.string.return_book)
-
+                                formHeader.tvTitle.text = getString(R.string.return_book)
+                                loadingOverlay.tvLoadingText.text=getString(R.string.return_book)
                                 btnSubmit.text = getString(R.string.return_book)
 
                                 tvReturnDateLabel.show()
@@ -189,7 +189,7 @@ class IssueReturnBookFragment : BaseFragment<FragmentIssueReturnBookBinding, Iss
 
     private fun setupClickListeners() {
         binding.apply {
-            ivBack.setOnClickListener {
+            formHeader.ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
 

@@ -9,55 +9,33 @@
     android:background="@color/background"
     tools:context=".presentation.history.BorrowingHistoryFragment">
 
-    <View
-        android:id="@+id/topBarBackground"
+    <include
+        android:id="@+id/titleHeader"
+        layout="@layout/title_header"
         android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:background="@drawable/bg_dashboard_header"
+        android:layout_height="@dimen/_64sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:contentDescription="Back"
-        android:src="@drawable/iv_back"
-        app:tint="@color/text_on_primary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground" />
-
-    <TextView
-        style="@style/LibraryTitleText"
-        android:id="@+id/tvTitle"
-        android:textAlignment="center"
-        android:text="Borrowing History"
-        app:layout_constraintStart_toEndOf="@id/ivBack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilSearch"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="@dimen/_56sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
         android:hint="Search books..."
         app:startIconDrawable="@drawable/iv_search"
         app:startIconTint="@color/text_secondary"
-        app:boxCornerRadiusTopStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusTopStart="@dimen/_12sdp"
+        app:boxCornerRadiusTopEnd="@dimen/_12sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_12sdp"
+        app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tilStatus"
-        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
+        app:layout_constraintTop_toBottomOf="@id/titleHeader">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSearch"
@@ -66,21 +44,21 @@
             android:inputType="text"
             android:maxLines="1"
             android:singleLine="true"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_14ssp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilStatus"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="130dp"
-        android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
-        app:boxCornerRadiusTopStart="12dp"
+        android:layout_width="@dimen/_130sdp"
+        android:layout_height="@dimen/_56sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        app:boxCornerRadiusTopStart="@dimen/_12sdp"
         android:hint="Status"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusTopEnd="@dimen/_12sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_12sdp"
+        app:boxCornerRadiusBottomEnd="@dimen/_12sdp"
         app:layout_constraintTop_toTopOf="@id/tilSearch"
         app:layout_constraintBottom_toBottomOf="@id/tilSearch"
         app:layout_constraintEnd_toEndOf="parent">
@@ -91,10 +69,10 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:inputType="none"
-            android:paddingStart="12dp"
+            android:paddingStart="@dimen/_12sdp"
             android:singleLine="true"
             android:text="All"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_14ssp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,11 +80,11 @@
         android:id="@+id/rvBorrowingHistory"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_16sdp"
         app:layout_constraintTop_toBottomOf="@id/tilSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,12 +92,8 @@
         tools:listitem="@layout/item_borrowing_history" />
     <TextView
         android:id="@+id/tvNoData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/LibraryNoDataText"
         android:text="No Borrowing History found."
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/rvBorrowingHistory"
         app:layout_constraintBottom_toBottomOf="@id/rvBorrowingHistory"
         app:layout_constraintStart_toStartOf="parent"

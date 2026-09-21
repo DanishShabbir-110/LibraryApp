@@ -14,4 +14,10 @@
     <color name="success">#6EDC95</color>
     <color name="error">#FF8A80</color>
     <color name="warning">#FFC766</color>
+
+    <color name="total_books_icon_background">#E8EEFF</color>
+    <color name="available_books_icon_background">#E8F7F1</color>
+    <color name="borrowed_books_icon_background">#FDECEC</color>
+    <color name="total_members_icon_background">#F0ECFF</color>
+
 </resources>

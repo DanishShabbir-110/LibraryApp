@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,7 +16,7 @@
         <View
             android:id="@+id/headerBackground"
             android:layout_width="0dp"
-            android:layout_height="165dp"
+            android:layout_height="@dimen/_165sdp"
             android:background="@drawable/bg_dashboard_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,12 +26,12 @@
             android:id="@+id/tvHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_32sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:text="Library App"
             android:textColor="@color/text_on_primary"
-            android:textSize="30sp"
+            android:textSize="@dimen/_30ssp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/headerBackground"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,281 +41,77 @@
             android:id="@+id/tvSubHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/_6sdp"
             android:alpha="0.9"
             android:text="Manage Books, Members and Borrowing"
             android:textColor="@color/text_on_primary"
-            android:textSize="14sp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="@id/tvHeader"
             app:layout_constraintStart_toStartOf="@id/tvHeader"
             app:layout_constraintTop_toBottomOf="@id/tvHeader" />
 
         <!-- Total Books -->
 
-        <com.google.android.material.card.MaterialCardView
+        <include
             android:id="@+id/cardTotalBooks"
+            layout="@layout/stat_card"
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="6dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_34sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
             app:layout_constraintEnd_toStartOf="@id/cardAvailableBooks"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerBackground"
-            app:strokeColor="@color/border"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivTotalBooks"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="14dp"
-                    android:background="#E8EEFF"
-                    android:padding="7dp"
-                    android:src="@drawable/iv_books"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/primary" />
-
-                <TextView
-                    android:id="@+id/tvTotalBooksLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="6dp"
-                    android:text="Total Books"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivTotalBooks" />
-
-                <TextView
-                    android:id="@+id/tvTotalBooks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:text="24"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvTotalBooksLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toBottomOf="@id/headerBackground" />
 
         <!-- Available Books -->
 
-        <com.google.android.material.card.MaterialCardView
+        <include
             android:id="@+id/cardAvailableBooks"
+            layout="@layout/stat_card"
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="12dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cardTotalBooks"
-            app:layout_constraintTop_toTopOf="@id/cardTotalBooks"
-            app:strokeColor="@color/border"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivAvailableBooks"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="14dp"
-                    android:background="#E8F7F1"
-                    android:padding="7dp"
-                    android:src="@drawable/iv_books"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/success" />
-
-                <TextView
-                    android:id="@+id/tvAvailableBooksLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="6dp"
-                    android:text="Available Books"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivAvailableBooks" />
-
-                <TextView
-                    android:id="@+id/tvAvailableBooks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:text="18"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvAvailableBooksLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toTopOf="@id/cardTotalBooks" />
 
         <!-- Borrowed Books -->
 
-        <com.google.android.material.card.MaterialCardView
+        <include
             android:id="@+id/cardBorrowedBooks"
+            layout="@layout/stat_card"
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="6dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
             app:layout_constraintEnd_toStartOf="@id/cardTotalMembers"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardTotalBooks"
-            app:strokeColor="@color/border"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivBorrowedBooks"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="14dp"
-                    android:background="#FDECEC"
-                    android:padding="7dp"
-                    android:src="@drawable/iv_members"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/error" />
-
-                <TextView
-                    android:id="@+id/tvBorrowedBooksLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="6dp"
-                    android:text="Borrowed Books"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivBorrowedBooks" />
-
-                <TextView
-                    android:id="@+id/tvBorrowedBooks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:text="6"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvBorrowedBooksLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toBottomOf="@id/cardTotalBooks" />
 
         <!-- Total Members -->
 
-        <com.google.android.material.card.MaterialCardView
+        <include
             android:id="@+id/cardTotalMembers"
+            layout="@layout/stat_card"
             android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="12dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cardBorrowedBooks"
-            app:layout_constraintTop_toTopOf="@id/cardBorrowedBooks"
-            app:strokeColor="@color/border"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/ivTotalMembers"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="14dp"
-                    android:background="#F0ECFF"
-                    android:padding="7dp"
-                    android:src="@drawable/iv_member"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/primary" />
-
-                <TextView
-                    android:id="@+id/tvTotalMembersLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="6dp"
-                    android:text="Total Members"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivTotalMembers" />
-
-                <TextView
-                    android:id="@+id/tvTotalMembers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="2dp"
-                    android:text="8"
-                    android:textColor="@color/text_primary"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvTotalMembersLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toTopOf="@id/cardBorrowedBooks" />
 
         <!-- Issue / Return Heading -->
 
         <TextView
             android:id="@+id/tvIssueReturnTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="20dp"
-            android:text="Issue / Return Book"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            style="@style/LibrarySectionTitle"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="@string/issue_return_book"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardBorrowedBooks" />
 
@@ -325,15 +120,15 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIssueReturn"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="14dp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="#FFF7E9"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="@dimen/_12sdp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -343,13 +138,13 @@
                 android:id="@+id/clIssueReturn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp">
+                android:paddingStart="@dimen/_18sdp"
+                android:paddingEnd="@dimen/_18sdp">
 
                 <ImageView
                     android:id="@+id/ivIssueReturn"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
+                    android:layout_width="@dimen/_42sdp"
+                    android:layout_height="@dimen/_42sdp"
                     android:src="@drawable/iv_issue_return"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -360,10 +155,10 @@
                     android:id="@+id/tvIssueReturn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/_16sdp"
                     android:text="Issue or Return a Book"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/_15ssp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/ivIssueReturn"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -376,8 +171,8 @@
 
         <View
             android:id="@+id/bottomSpace"
-            android:layout_width="1dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_1sdp"
+            android:layout_height="@dimen/_24sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -146,11 +146,11 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
                 launch {
                     viewModel.isEditMode.collectLatest { isEditMode ->
                         if (isEditMode) {
-                            tvTitle.text = getString(com.example.libraryapp.R.string.update_book)
+                            formHeader.tvTitle.text = getString(com.example.libraryapp.R.string.update_book)
                             btnSaveBook.text = getString(com.example.libraryapp.R.string.update_book)
                         } else {
                             btnSaveBook.text = getString(com.example.libraryapp.R.string.add_book)
-                            tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
+                            formHeader.tvTitle.text = getString(com.example.libraryapp.R.string.add_book)
                         }
                     }
                 }
@@ -163,7 +163,7 @@ class AddBookFragment : BaseFragment<FragmentAddBookBinding, AddBookViewModel>(
             btnSaveBook.setOnClickListener {
                 viewModel.saveBook()
             }
-            ivBack.setOnClickListener {
+            formHeader.ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
         }

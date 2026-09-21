@@ -7,102 +7,46 @@
     android:background="@color/background"
     tools:context=".presentation.books.bookslist.BooksFragment">
 
-    <View
-        android:id="@+id/topBarBackground"
+    <include
+        android:id="@+id/titleHeader"
+        layout="@layout/title_header"
         android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:background="@drawable/bg_dashboard_header"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="@dimen/_64sdp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        style="@style/LibraryTitleText"
-        android:id="@+id/tvTitle"
-        android:text="Books"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-        app:layout_constraintEnd_toEndOf="@id/topBarBackground"
-        app:layout_constraintStart_toStartOf="@id/topBarBackground"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardSearch"
+    <include
+        android:id="@+id/searchBar"
+        layout="@layout/search_bar"
         android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/surface"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="1dp"
-        app:strokeColor="@color/border"
-        app:strokeWidth="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="@dimen/_52sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        app:layout_constraintTop_toBottomOf="@id/titleHeader"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/ivSearchInside"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="14dp"
-                android:contentDescription="Search"
-                android:src="@drawable/iv_search"
-                app:tint="@color/text_secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/etSearchBooks"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:background="@android:color/transparent"
-                android:hint="Search books..."
-                android:inputType="text"
-                android:padding="0dp"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivSearchInside"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBooks"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:clipToPadding="false"
-        android:paddingBottom="90dp"
+        android:paddingBottom="@dimen/_90sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardSearch"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         tools:listitem="@layout/item_book"/>
 
     <TextView
         android:id="@+id/tvNoData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/LibraryNoDataText"
         android:text="No books added yet"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/rvBooks"
         app:layout_constraintBottom_toBottomOf="@id/rvBooks"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,15 +54,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddBook"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        style="@style/LibraryFloatingActionButton"
         android:contentDescription="Add Book"
-        android:src="@drawable/iv_add"
-        app:backgroundTint="@color/primary"
-        app:fabCustomSize="64dp"
-        app:tint="@color/text_on_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

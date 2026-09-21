@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,61 +13,43 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="24dp">
+            android:paddingBottom="@dimen/_24sdp">
 
-            <View
-                android:id="@+id/topBarBackground"
+            <include
+                android:id="@+id/formHeader"
+                layout="@layout/header_component"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_dashboard_header"
+                android:layout_height="@dimen/_64sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivBack"
-                style="@style/LibraryBackButton"
-                android:contentDescription="@string/back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-                app:layout_constraintTop_toTopOf="@id/topBarBackground" />
-
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/LibraryTitleText"
-                android:layout_marginStart="28dp"
-                android:text="@string/add_member"
-                app:layout_constraintBottom_toBottomOf="@id/ivBack"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivBack"
-                app:layout_constraintTop_toTopOf="@id/ivBack" />
-
-            <ImageView
                 android:id="@+id/ivMemberIcon"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_marginTop="24dp"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginTop="@dimen/_24sdp"
                 android:background="#E8F7F1"
                 android:contentDescription="@string/member"
-                android:padding="22dp"
+                android:padding="@dimen/_22sdp"
                 android:src="@drawable/iv_member"
-                app:tint="@color/success"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/topBarBackground" />
+                app:layout_constraintTop_toBottomOf="@id/formHeader"
+                app:tint="@color/success" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilMemberName"
                 style="@style/LibraryTextInputLayout"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/_24sdp"
                 android:hint="@string/full_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,14 +57,14 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMemberName"
-                    style="@style/LibraryTextInputEditText"/>
+                    style="@style/LibraryTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilEmail"
                 style="@style/LibraryTextInputLayout"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_16sdp"
                 android:hint="@string/email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,14 +72,14 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
-                    style="@style/LibraryTextInputEditText"/>
+                    style="@style/LibraryTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPhone"
                 style="@style/LibraryTextInputLayout"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_16sdp"
                 android:hint="@string/phone_number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +87,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPhone"
-                   style="@style/LibraryTextInputEditText"/>
+                    style="@style/LibraryTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,9 +108,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

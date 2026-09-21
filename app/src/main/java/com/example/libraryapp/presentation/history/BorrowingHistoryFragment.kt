@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.databinding.FragmentBrowsingHistoryBinding
 import com.example.libraryapp.presentation.base.BaseFragment
@@ -30,29 +29,15 @@ class BorrowingHistoryFragment :
         setupRecyclerView()
         observeUiState()
         setupSearch()
-        setupBackArrow()
         setupStatusDropdown()
-        setupListeners()
     }
 
-    private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
-
-    private fun setupBackArrow() {
-
-        val showBackArrow =
-            arguments?.getBoolean("showBackArrow", false) ?: false
-
-        binding.ivBack.isVisible = showBackArrow
-    }
 
     @SuppressLint("SetTextI18n")
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
+                titleHeader.tvTitle.text = "Borrowing History"
                 launch {
                     viewModel.borrowBooks.collectLatest { borrowBooks ->
                         borrowingHistoryAdapter.submitList(borrowBooks)
@@ -60,14 +45,14 @@ class BorrowingHistoryFragment :
                     }
                 }
                 launch {
-                    viewModel.isLoading.collectLatest {isLoading->
-                        loadingOverlay.root.isVisible=isLoading
-                        loadingOverlay.tvLoadingText.text="Loading History..."
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        loadingOverlay.root.isVisible = isLoading
+                        loadingOverlay.tvLoadingText.text = "Loading History..."
                     }
                 }
                 launch {
-                    combine(viewModel.borrowBooks,viewModel.isLoading){books, isLoading ->
-                        books.isEmpty()&&!isLoading
+                    combine(viewModel.borrowBooks, viewModel.isLoading) { books, isLoading ->
+                        books.isEmpty() && !isLoading
                     }.collectLatest {
                         tvNoData.isVisible = it
 

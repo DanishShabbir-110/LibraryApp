@@ -12,58 +12,36 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="24dp">
+        android:paddingBottom="@dimen/_24sdp">
 
-        <View
-            android:id="@+id/topBarBackground"
+        <include
+            android:id="@+id/formHeader"
+            layout="@layout/header_component"
             android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_dashboard_header"
+            android:layout_height="@dimen/_64sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:contentDescription="Back"
-            android:src="@drawable/iv_back"
-            app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/topBarBackground"
-            app:tint="@color/text_on_primary" />
-
-        <TextView
-            style="@style/LibraryTitleText"
-            android:id="@+id/tvTitle"
-            android:layout_marginStart="28dp"
-            android:text="@string/issue_book"
-            app:layout_constraintBottom_toBottomOf="@id/ivBack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ivBack"
-            app:layout_constraintTop_toTopOf="@id/ivBack" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleAction"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
             app:checkedButton="@id/btnIssueMode"
-            app:selectionRequired="true"
-            app:singleSelection="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBarBackground">
+            app:layout_constraintTop_toBottomOf="@id/formHeader"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnIssueMode"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_weight="1"
                 android:text="Issue Book"
                 android:textStyle="bold" />
@@ -72,7 +50,7 @@
                 android:id="@+id/btnReturnMode"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_weight="1"
                 android:text="Return Book"
                 android:textStyle="bold" />
@@ -81,150 +59,76 @@
 
         <TextView
             android:id="@+id/tvSelectMember"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
+            style="LibrarySectionLabel"
             android:text="Select Member"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toggleAction" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMember"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Choose member"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            style="@style/LibraryDropdownInputLayout"
+            android:hint="@string/choose_member"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSelectMember"
-            app:startIconDrawable="@drawable/iv_member"
-            app:startIconTint="@color/text_secondary">
+            app:startIconDrawable="@drawable/iv_member">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actMember"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="none"
-                android:paddingStart="0dp"
-                android:textSize="15sp" />
+                style="@style/LibraryAutoCompleteTextView" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tvSelectBook"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibrarySectionLabel"
             android:text="Select Book"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilMember" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilBook"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="0dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibraryDropdownInputLayout"
             android:hint="Choose book"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSelectBook"
-            app:startIconDrawable="@drawable/ic_books_category"
-            app:startIconTint="@color/text_secondary">
+            app:startIconDrawable="@drawable/ic_books_category">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/actBook"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="none"
-                android:paddingStart="0dp"
-                android:textSize="15sp" />
+                style="@style/LibraryAutoCompleteTextView" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tvIssueDateLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibrarySectionLabel"
             android:text="Issue Date"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilBook" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilIssueDate"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibraryCalendarInputLayout"
             android:hint="Select issue date"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
-            app:endIconDrawable="@drawable/ic_down"
-            app:endIconTint="@color/text_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvIssueDateLabel"
-            app:startIconDrawable="@drawable/ic_calendar"
-            app:startIconTint="@color/text_secondary">
+            app:layout_constraintTop_toBottomOf="@id/tvIssueDateLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etIssueDate"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none"
-                android:textSize="18sp" />
+                style="@style/LibraryCalendarEditText"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tvReturnDateLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibrarySectionLabel"
             android:text="Return Date"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -232,89 +136,36 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilReturnDate"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            style="@style/LibraryCalendarInputLayout"
             android:hint="Select return date"
             android:visibility="gone"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
-            app:endIconDrawable="@drawable/ic_down"
-            app:endIconTint="@color/text_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvReturnDateLabel"
-            app:startIconDrawable="@drawable/ic_calendar"
-            app:startIconTint="@color/text_secondary">
+            app:layout_constraintTop_toBottomOf="@id/tvReturnDateLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etReturnDate"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none"
-                android:textSize="18sp" />
+                style="@style/LibraryCalendarEditText" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmit"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:text="ISSUE BOOK"
-            android:textColor="@color/text_on_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/primary"
-            app:cornerRadius="10dp"
+            style="@style/LibraryPrimaryButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilReturnDate" />
 
-        <FrameLayout
+        <include
             android:id="@+id/loadingOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#80000000"
-            android:clickable="true"
-            android:elevation="20dp"
-            android:focusable="true"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:indeterminateTint="@color/white" />
-
-                <TextView
-                    android:id="@+id/tvLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Processing...\nPlease Wait"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+            layout="@layout/loading_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

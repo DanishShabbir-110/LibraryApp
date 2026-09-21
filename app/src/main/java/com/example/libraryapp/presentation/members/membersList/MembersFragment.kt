@@ -62,7 +62,8 @@ class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
     private fun observeUiState() {
         loadAndRepeatOnStarted {
             binding.apply {
-
+                titleHeader.tvTitle.text="Members"
+                searchBar.etSearch.hint = getString(R.string.search_members)
                 launch {
                     viewModel.members.collectLatest { members ->
                         memberAdapter.submitList(members)
@@ -71,7 +72,8 @@ class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
                 }
                 launch {
                     viewModel.isLoading.collectLatest { isLoading ->
-                        loadingOverlay.isVisible = isLoading
+                        loadingOverlay.root.isVisible = isLoading
+                        loadingOverlay.tvLoadingText.text = "Loading Members....."
                     }
                 }
                 launch {
@@ -94,7 +96,8 @@ class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
                 showDeleteDialog(member)
             },
             onUpdateClick = { member ->
-               val action= MembersFragmentDirections.memberFragmentToAddMemberFragment(memberId = member.id)
+                val action =
+                    MembersFragmentDirections.memberFragmentToAddMemberFragment(memberId = member.id)
                 findNavController().navigate(action)
             }
         )
@@ -111,7 +114,7 @@ class MembersFragment : BaseFragment<FragmentMembersBinding, MemberViewModel>(
     }
 
     private fun setupSearch() {
-        binding.etSearchMembers.doAfterTextChanged { editable ->
+        binding.searchBar.etSearch.doAfterTextChanged { editable ->
             viewModel.searchMembers(editable?.toString().orEmpty())
         }
     }

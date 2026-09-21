@@ -118,10 +118,10 @@ class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewMo
                 launch {
                     viewModel.isEditMode.collectLatest { isEditMode ->
                         if (isEditMode) {
-                            tvTitle.text = getString(R.string.update_member)
+                            formHeader.tvTitle.text = getString(R.string.update_member)
                             btnSaveMember.text = getString(R.string.update_member)
                         } else {
-                            tvTitle.text = getString(R.string.save_member)
+                            formHeader.tvTitle.text = getString(R.string.save_member)
                             btnSaveMember.text = getString(R.string.save_member)
                         }
                     }
@@ -135,7 +135,7 @@ class AddMemberFragment : BaseFragment<FragmentAddMemberBinding, AddMemberViewMo
             btnSaveMember.setOnClickListener {
                 viewModel.saveMember()
             }
-            ivBack.setOnClickListener {
+            formHeader.ivBack.setOnClickListener {
                 findNavController().popBackStack()
             }
         }
